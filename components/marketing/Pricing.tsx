@@ -11,7 +11,8 @@ export const Pricing: React.FC = () => {
     offset: ["start end", "end start"]
   });
 
-  const yPro = useTransform(scrollYProgress, [0, 0.5, 1], [100, -50, 100]);
+  // Parallax: Pro card rises as you scroll (optimized with GPU acceleration)
+  const yPro = useTransform(scrollYProgress, [0, 0.5, 1], [80, -40, 80]);
 
   return (
     <section id="pricing" ref={containerRef} className="py-32 px-6 bg-[#f0f4f8] overflow-hidden">
@@ -26,8 +27,12 @@ export const Pricing: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
           {/* Free Plan */}
           <motion.div 
-            className="bg-[#f0f4f8] p-8 rounded-[3rem] shadow-clay border border-white/50 relative z-0"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
             whileHover={{ scale: 1.02 }}
+            className="bg-[#f0f4f8] p-8 rounded-[3rem] shadow-clay border border-white/50 relative z-0"
           >
             <h3 className="text-2xl font-bold text-slate-700">Si Hemat</h3>
             <div className="my-6">
@@ -49,7 +54,7 @@ export const Pricing: React.FC = () => {
               </li>
               <li className="flex items-center gap-3 text-slate-400">
                 <XCircle size={20} />
-                <span>WhatsApp Bot Assistant</span>
+                <span>AI Smart Input</span>
               </li>
             </ul>
             <Button variant="secondary" className="w-full shadow-none border border-slate-200">
@@ -59,8 +64,9 @@ export const Pricing: React.FC = () => {
 
           {/* Paid Plan - Parallax Effect */}
           <motion.div 
-            style={{ y: yPro }}
-            className="bg-emerald-50 p-8 rounded-[3rem] shadow-[20px_20px_60px_#a7f3d0,-20px_-20px_60px_#ffffff] border border-emerald-100 relative z-10 md:-mt-10"
+            style={{ y: yPro, willChange: 'transform' }}
+            whileHover={{ scale: 1.02 }}
+            className="bg-emerald-50 p-8 rounded-[3rem] shadow-[20px_20px_60px_#a7f3d0,-20px_-20px_60px_#ffffff] border border-emerald-100 relative z-10"
           >
             <div className="absolute -top-4 right-10 bg-lime-400 text-emerald-900 px-4 py-1 rounded-full text-sm font-bold shadow-lg">
                 POPULAR 🚀
@@ -70,7 +76,7 @@ export const Pricing: React.FC = () => {
                <span className="text-5xl font-heading font-extrabold text-emerald-600">{formatPrice(10000)}</span>
                <span className="text-emerald-400">/bulan</span>
             </div>
-            <p className="text-sm text-emerald-600/80 mb-6">Harga seblak doang, dapet asisten pribadi.</p>
+            <p className="text-sm text-emerald-600/80 mb-6">Harga seblak doang, dapet asisten AI pribadi. 🤖</p>
             <ul className="space-y-4 mb-8">
               <li className="flex items-center gap-3 text-slate-700">
                 <CheckCircle size={20} className="text-emerald-500" />
@@ -78,11 +84,11 @@ export const Pricing: React.FC = () => {
               </li>
               <li className="flex items-center gap-3 text-slate-700">
                 <CheckCircle size={20} className="text-emerald-500" />
-                <span><b>WhatsApp BOT Assistant</b></span>
+                <span><b>AI Smart Input</b> - Ketik natural, AI parsing otomatis</span>
               </li>
               <li className="flex items-center gap-3 text-slate-700">
                 <CheckCircle size={20} className="text-emerald-500" />
-                <span>Input Tanpa Buka Web</span>
+                <span>Insight Keuangan AI-Powered</span>
               </li>
               <li className="flex items-center gap-3 text-slate-700">
                 <CheckCircle size={20} className="text-emerald-500" />

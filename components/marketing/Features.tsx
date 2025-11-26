@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '../../lib/utils';
-import { PieChart, MessageCircle, Zap, TrendingUp } from 'lucide-react';
+import { PieChart, Sparkles, Zap, TrendingUp } from 'lucide-react';
 
 const features = [
   {
@@ -10,7 +10,7 @@ const features = [
     desc: 'Catat pengeluaran secepat kilat. Tinggal klik, ketik, beres. Ga pake ribet.',
     icon: Zap,
     color: 'bg-yellow-100 text-yellow-600',
-    image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1000&q=80'
+    image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=800&q=70'
   },
   {
     id: 'analytics',
@@ -18,15 +18,15 @@ const features = [
     desc: 'Liat grafik pengeluaran yang aesthetic. Jadi tau deh duit abis buat apa aja (Spoiler: Makanan).',
     icon: PieChart,
     color: 'bg-emerald-100 text-emerald-600',
-    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1000&q=80'
+    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=70'
   },
   {
-    id: 'whatsapp',
-    title: 'WhatsApp Bot',
-    desc: 'Males buka web? Chat aja sama Bot kami. Kayak chat sama pacar, tapi ini balesnya cepet dan jujur soal duit.',
-    icon: MessageCircle,
-    color: 'bg-green-100 text-green-600',
-    image: 'https://images.unsplash.com/photo-1611746100982-9b6e2df261d2?auto=format&fit=crop&w=1000&q=80' 
+    id: 'ai-input',
+    title: 'AI Smart Input',
+    desc: 'Ketik aja "Beli kopi 25rb" terus AI langsung paham kategori dan jumlahnya. Kayak punya asisten pribadi yang ngerti bahasa kamu! 🤖',
+    icon: Sparkles,
+    color: 'bg-violet-100 text-violet-600',
+    image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=800&q=70' 
   },
   {
     id: 'history',
@@ -34,7 +34,7 @@ const features = [
     desc: 'Flashback ke masa lalu liat dosa-dosa finansialmu di bulan kemarin. Buat introspeksi diri.',
     icon: TrendingUp,
     color: 'bg-purple-100 text-purple-600',
-    image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1000&q=80'
+    image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=800&q=70'
   }
 ];
 

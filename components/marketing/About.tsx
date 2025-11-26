@@ -7,8 +7,9 @@ export const About: React.FC = () => {
       {/* Video Background Placeholder */}
       <div className="absolute inset-0 opacity-30">
          <img 
-            src="https://images.unsplash.com/photo-1565514020176-db792f3b3933?auto=format&fit=crop&w=1920&q=80" 
+            src="https://images.unsplash.com/photo-1565514020176-db792f3b3933?auto=format&fit=crop&w=1200&q=70" 
             className="w-full h-full object-cover"
+            loading="lazy"
             alt="Background"
          />
          <div className="absolute inset-0 bg-gradient-to-b from-slate-900 via-transparent to-slate-900"></div>

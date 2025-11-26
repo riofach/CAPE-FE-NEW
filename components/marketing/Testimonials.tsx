@@ -7,42 +7,42 @@ const testimonials = [
     name: "Budi Santoso",
     role: "Anak Kos Pro",
     text: "Sejak pake CAPE, gue jadi tau kalo 70% duit gue abis buat kopi susu gula aren. Menohok, tapi bermanfaat.",
-    img: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80",
+    img: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&q=70",
     color: "white" as const
   },
   {
     name: "Siti Aminah",
     role: "Ibu Rumah Tangga",
-    text: "Fitur WA Bot-nya ngebantu banget! Lagi di pasar tinggal chat 'Beli Ikan 50rb', langsung kecatet. Mantap!",
-    img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80",
+    text: "Fitur AI-nya canggih banget! Tinggal ketik 'Beli Ikan 50rb di pasar' langsung otomatis ke kategori yang bener. Mantap! 🤖",
+    img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&q=70",
     color: "green" as const
   },
   {
     name: "Dedi Corbuzier KW",
     role: "Content Creator",
     text: "10 Ribu doang bisa punya asisten keuangan? Worth it parah sih. Daripada duitnya ilang gatau kemana.",
-    img: "https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&w=150&q=80",
+    img: "https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&w=100&q=70",
     color: "lime" as const
   },
   {
     name: "Rina Nose",
     role: "Freelancer",
     text: "Aplikasi ini kaya temen yang jujur banget. 'Woy duit lu abis!' tapi pake font lucu jadi ga sakit hati.",
-    img: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=150&q=80",
+    img: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=100&q=70",
     color: "white" as const
   },
   {
     name: "Joko Anwar",
     role: "Mahasiswa Abadi",
     text: "Tampilan 'Soft Clay'-nya bikin mata adem pas liat saldo yang panas. UI/UX nya juara!",
-    img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80",
+    img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=70",
     color: "green" as const
   },
   {
     name: "Sarah Sechan",
     role: "Manager",
     text: "Finally, tracker keuangan yang ga ngebosenin. Kaya main game, tapi yang dipertaruhkan masa depan.",
-    img: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=150&q=80",
+    img: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=100&q=70",
     color: "lime" as const
   }
 ];
@@ -105,7 +105,7 @@ const TestimonialCard = ({ data, delay }: { data: any, delay: number }) => {
                 </div>
                 <div className="flex items-center gap-4">
                     <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white shadow-sm">
-                        <img src={data.img} alt={data.name} className="w-full h-full object-cover" />
+                        <img src={data.img} alt={data.name} loading="lazy" className="w-full h-full object-cover" />
                     </div>
                     <div>
                         <h4 className="font-bold text-slate-800 text-sm">{data.name}</h4>
