@@ -1,159 +1,256 @@
 <!DOCTYPE html>
 <html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Konfirmasi Email - CAPE</title>
-  <!--[if mso]>
-  <noscript>
-    <xml>
-      <o:OfficeDocumentSettings>
-        <o:PixelsPerInch>96</o:PixelsPerInch>
-      </o:OfficeDocumentSettings>
-    </xml>
-  </noscript>
-  <![endif]-->
-</head>
-<body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f4f8;">
-  
-  <!-- Outer Container -->
-  <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color: #f0f4f8;">
-    <tr>
-      <td align="center" style="padding: 40px 20px;">
-        
-        <!-- Inner Card -->
-        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="max-width: 480px; background-color: #f0f4f8; border-radius: 24px; box-shadow: 20px 20px 60px #c8d0e7, -20px -20px 60px #ffffff; border: 1px solid rgba(255,255,255,0.4);">
-          
-          <!-- Logo Section -->
-          <tr>
-            <td align="center" style="padding: 40px 40px 20px 40px;">
-              <img src="https://enyoenpbbbnwhiixtfuz.supabase.co/storage/v1/object/public/assets/capev2-logo.png" alt="CAPE Logo" width="80" height="80" style="display: block; border: 0;">
-            </td>
-          </tr>
-          
-          <!-- Title -->
-          <tr>
-            <td align="center" style="padding: 0 40px 10px 40px;">
-              <h1 style="margin: 0; font-size: 24px; font-weight: bold; color: #1e293b;">
-                Selamat Datang di CAPE! 🎉
-              </h1>
-            </td>
-          </tr>
-          
-          <!-- Subtitle -->
-          <tr>
-            <td align="center" style="padding: 0 40px 30px 40px;">
-              <p style="margin: 0; font-size: 16px; color: #64748b; line-height: 1.5;">
-                Tinggal satu langkah lagi untuk mulai tracking pengeluaranmu!
-              </p>
-            </td>
-          </tr>
-          
-          <!-- CTA Button -->
-          <tr>
-            <td align="center" style="padding: 0 40px 30px 40px;">
-              <table role="presentation" cellspacing="0" cellpadding="0" border="0">
-                <tr>
-                  <td style="border-radius: 16px; background: linear-gradient(145deg, #10b981, #059669); box-shadow: 6px 6px 12px #6ee7b7, -6px -6px 12px #ffffff;">
-                    <a href="{{ .ConfirmationURL }}" target="_blank" style="display: inline-block; padding: 16px 40px; font-size: 16px; font-weight: bold; color: #ffffff; text-decoration: none; border-radius: 16px;">
-                      ✨ Konfirmasi Email
-                    </a>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-          
-          <!-- Alternative Link -->
-          <tr>
-            <td align="center" style="padding: 0 40px 20px 40px;">
-              <p style="margin: 0; font-size: 13px; color: #94a3b8; line-height: 1.5;">
-                Atau copy link ini ke browser:
-              </p>
-            </td>
-          </tr>
-          
-          <tr>
-            <td align="center" style="padding: 0 40px 30px 40px;">
-              <div style="background-color: #e2e8f0; border-radius: 12px; padding: 12px 16px; word-break: break-all;">
-                <a href="{{ .ConfirmationURL }}" style="font-size: 12px; color: #10b981; text-decoration: none;">
-                  {{ .ConfirmationURL }}
-                </a>
-              </div>
-            </td>
-          </tr>
-          
-          <!-- Divider -->
-          <tr>
-            <td style="padding: 0 40px;">
-              <div style="border-top: 1px solid #e2e8f0;"></div>
-            </td>
-          </tr>
-          
-          <!-- Info Section -->
-          <tr>
-            <td align="center" style="padding: 30px 40px 20px 40px;">
-              <p style="margin: 0; font-size: 14px; color: #64748b; line-height: 1.6;">
-                <strong>Apa itu CAPE?</strong><br>
-                CAPE (Catatan Pengeluaran) adalah expense tracker dengan AI yang bikin tracking uangmu jadi gampang banget! 💸
-              </p>
-            </td>
-          </tr>
-          
-          <!-- Features -->
-          <tr>
-            <td align="center" style="padding: 0 40px 30px 40px;">
-              <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
-                <tr>
-                  <td align="center" style="padding: 8px;">
-                    <span style="display: inline-block; background-color: #ecfdf5; color: #059669; font-size: 13px; padding: 6px 14px; border-radius: 20px;">
-                      🤖 AI Parsing
-                    </span>
-                  </td>
-                  <td align="center" style="padding: 8px;">
-                    <span style="display: inline-block; background-color: #ecfdf5; color: #059669; font-size: 13px; padding: 6px 14px; border-radius: 20px;">
-                      📊 Dashboard
-                    </span>
-                  </td>
-                  <td align="center" style="padding: 8px;">
-                    <span style="display: inline-block; background-color: #ecfdf5; color: #059669; font-size: 13px; padding: 6px 14px; border-radius: 20px;">
-                      🆓 Gratis!
-                    </span>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-          
-          <!-- Footer -->
-          <tr>
-            <td align="center" style="padding: 20px 40px 40px 40px; background-color: rgba(255,255,255,0.5); border-radius: 0 0 24px 24px;">
-              <p style="margin: 0 0 10px 0; font-size: 12px; color: #94a3b8;">
-                Email ini dikirim oleh CAPE (Catatan Pengeluaran)
-              </p>
-              <p style="margin: 0; font-size: 12px; color: #94a3b8;">
-                Kalau kamu tidak mendaftar di CAPE, abaikan email ini.
-              </p>
-            </td>
-          </tr>
-          
-        </table>
-        <!-- End Inner Card -->
-        
-        <!-- Copyright -->
-        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="max-width: 480px;">
-          <tr>
-            <td align="center" style="padding: 30px 20px;">
-              <p style="margin: 0; font-size: 12px; color: #94a3b8;">
-                © 2025 CAPE. Made with ☕ & 💸
-              </p>
-            </td>
-          </tr>
-        </table>
-        
-      </td>
-    </tr>
-  </table>
-  
-</body>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Konfirmasi Email - CAPE</title>
+		<!--[if mso]>
+			<noscript>
+				<xml>
+					<o:OfficeDocumentSettings>
+						<o:PixelsPerInch>96</o:PixelsPerInch>
+					</o:OfficeDocumentSettings>
+				</xml>
+			</noscript>
+		<![endif]-->
+	</head>
+	<body
+		style="
+			margin: 0;
+			padding: 0;
+			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+			background-color: #f0f4f8;
+		"
+	>
+		<!-- Outer Container -->
+		<table
+			role="presentation"
+			cellspacing="0"
+			cellpadding="0"
+			border="0"
+			width="100%"
+			style="background-color: #f0f4f8"
+		>
+			<tr>
+				<td align="center" style="padding: 40px 20px">
+					<!-- Inner Card -->
+					<table
+						role="presentation"
+						cellspacing="0"
+						cellpadding="0"
+						border="0"
+						width="100%"
+						style="
+							max-width: 480px;
+							background-color: #f0f4f8;
+							border-radius: 24px;
+							box-shadow: 20px 20px 60px #c8d0e7, -20px -20px 60px #ffffff;
+							border: 1px solid rgba(255, 255, 255, 0.4);
+						"
+					>
+						<!-- Logo Section -->
+						<tr>
+							<td align="center" style="padding: 40px 40px 20px 40px">
+								<img
+									src="https://i.postimg.cc/vZpR7bcQ/capev2-logo.png"
+									alt="CAPE Logo"
+									width="80"
+									height="80"
+									style="display: block; border: 0"
+								/>
+							</td>
+						</tr>
+
+						<!-- Title -->
+						<tr>
+							<td align="center" style="padding: 0 40px 10px 40px">
+								<h1 style="margin: 0; font-size: 24px; font-weight: bold; color: #1e293b">
+									Selamat Datang di CAPE! 🎉
+								</h1>
+							</td>
+						</tr>
+
+						<!-- Subtitle -->
+						<tr>
+							<td align="center" style="padding: 0 40px 30px 40px">
+								<p style="margin: 0; font-size: 16px; color: #64748b; line-height: 1.5">
+									Tinggal satu langkah lagi untuk mulai tracking pengeluaranmu!
+								</p>
+							</td>
+						</tr>
+
+						<!-- CTA Button -->
+						<tr>
+							<td align="center" style="padding: 0 40px 30px 40px">
+								<table role="presentation" cellspacing="0" cellpadding="0" border="0">
+									<tr>
+										<td
+											style="
+												border-radius: 16px;
+												background: linear-gradient(145deg, #10b981, #059669);
+												box-shadow: 6px 6px 12px #6ee7b7, -6px -6px 12px #ffffff;
+											"
+										>
+											<a
+												href="{{ .ConfirmationURL }}"
+												target="_blank"
+												style="
+													display: inline-block;
+													padding: 16px 40px;
+													font-size: 16px;
+													font-weight: bold;
+													color: #ffffff;
+													text-decoration: none;
+													border-radius: 16px;
+												"
+											>
+												✨ Konfirmasi Email
+											</a>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+
+						<!-- Alternative Link -->
+						<tr>
+							<td align="center" style="padding: 0 40px 20px 40px">
+								<p style="margin: 0; font-size: 13px; color: #94a3b8; line-height: 1.5">
+									Atau copy link ini ke browser:
+								</p>
+							</td>
+						</tr>
+
+						<tr>
+							<td align="center" style="padding: 0 40px 30px 40px">
+								<div
+									style="
+										background-color: #e2e8f0;
+										border-radius: 12px;
+										padding: 12px 16px;
+										word-break: break-all;
+									"
+								>
+									<a
+										href="{{ .ConfirmationURL }}"
+										style="font-size: 12px; color: #10b981; text-decoration: none"
+									>
+										{{ .ConfirmationURL }}
+									</a>
+								</div>
+							</td>
+						</tr>
+
+						<!-- Divider -->
+						<tr>
+							<td style="padding: 0 40px">
+								<div style="border-top: 1px solid #e2e8f0"></div>
+							</td>
+						</tr>
+
+						<!-- Info Section -->
+						<tr>
+							<td align="center" style="padding: 30px 40px 20px 40px">
+								<p style="margin: 0; font-size: 14px; color: #64748b; line-height: 1.6">
+									<strong>Apa itu CAPE?</strong><br />
+									CAPE (Catatan Pengeluaran) adalah expense tracker dengan AI yang bikin tracking
+									uangmu jadi gampang banget! 💸
+								</p>
+							</td>
+						</tr>
+
+						<!-- Features -->
+						<tr>
+							<td align="center" style="padding: 0 40px 30px 40px">
+								<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+									<tr>
+										<td align="center" style="padding: 8px">
+											<span
+												style="
+													display: inline-block;
+													background-color: #ecfdf5;
+													color: #059669;
+													font-size: 13px;
+													padding: 6px 14px;
+													border-radius: 20px;
+												"
+											>
+												🤖 AI Parsing
+											</span>
+										</td>
+										<td align="center" style="padding: 8px">
+											<span
+												style="
+													display: inline-block;
+													background-color: #ecfdf5;
+													color: #059669;
+													font-size: 13px;
+													padding: 6px 14px;
+													border-radius: 20px;
+												"
+											>
+												📊 Dashboard
+											</span>
+										</td>
+										<td align="center" style="padding: 8px">
+											<span
+												style="
+													display: inline-block;
+													background-color: #ecfdf5;
+													color: #059669;
+													font-size: 13px;
+													padding: 6px 14px;
+													border-radius: 20px;
+												"
+											>
+												🆓 Gratis!
+											</span>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+
+						<!-- Footer -->
+						<tr>
+							<td
+								align="center"
+								style="
+									padding: 20px 40px 40px 40px;
+									background-color: rgba(255, 255, 255, 0.5);
+									border-radius: 0 0 24px 24px;
+								"
+							>
+								<p style="margin: 0 0 10px 0; font-size: 12px; color: #94a3b8">
+									Email ini dikirim oleh CAPE (Catatan Pengeluaran)
+								</p>
+								<p style="margin: 0; font-size: 12px; color: #94a3b8">
+									Kalau kamu tidak mendaftar di CAPE, abaikan email ini.
+								</p>
+							</td>
+						</tr>
+					</table>
+					<!-- End Inner Card -->
+
+					<!-- Copyright -->
+					<table
+						role="presentation"
+						cellspacing="0"
+						cellpadding="0"
+						border="0"
+						width="100%"
+						style="max-width: 480px"
+					>
+						<tr>
+							<td align="center" style="padding: 30px 20px">
+								<p style="margin: 0; font-size: 12px; color: #94a3b8">
+									© 2025 CAPE. Made with ☕ & 💸
+								</p>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</body>
 </html>
