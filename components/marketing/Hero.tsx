@@ -55,7 +55,7 @@ export const Hero: React.FC = () => {
 							perlu nangis di pojokan. 🚀
 						</p>
 						<div className="flex items-center justify-center gap-4 pt-4">
-							<Link to="/login">
+							<Link to="/register">
 								<Button size="lg" className="rounded-full text-lg px-10">
 									Coba Gratis Sekarang
 								</Button>
