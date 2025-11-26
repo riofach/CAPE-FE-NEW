@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Button } from '../ui/button';
 import { Send } from 'lucide-react';
 
@@ -6,6 +7,14 @@ export const Footer: React.FC = () => {
   return (
     <footer className="bg-white pt-20 pb-10 px-6 rounded-t-[4rem] shadow-[0_-20px_60px_rgba(0,0,0,0.05)]">
       <div className="max-w-4xl mx-auto text-center">
+        {/* Logo */}
+        <Link to="/" className="inline-block mb-6">
+          <img 
+            src="/capev2-logo.png" 
+            alt="CAPE Logo" 
+            className="w-20 h-20 mx-auto"
+          />
+        </Link>
         <h2 className="text-3xl md:text-5xl font-heading font-bold text-slate-800 mb-6">
           Siap Mengatur Uangmu?
         </h2>

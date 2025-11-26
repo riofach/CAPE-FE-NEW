@@ -1,40 +1,33 @@
-import React, { useEffect } from 'react';
-import { Navbar } from './components/layout/navbar';
-import { Hero } from './components/marketing/Hero';
-import { About } from './components/marketing/About';
-import { Features } from './components/marketing/Features';
-import { Pricing } from './components/marketing/Pricing';
-import { Testimonials } from './components/marketing/Testimonials';
-import { Footer } from './components/marketing/Footer';
+import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './contexts/AuthContext';
+import { ProtectedRoute } from './components/auth/ProtectedRoute';
+import { Landing } from './pages/Landing';
+import { Login } from './pages/Login';
+import { Register } from './pages/Register';
+import { AuthCallback } from './pages/AuthCallback';
+import { Dashboard } from './pages/Dashboard';
 
 function App() {
-  // Smooth scroll behavior for anchor links
-  useEffect(() => {
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const href = this.getAttribute('href');
-        if(href) {
-            document.querySelector(href)?.scrollIntoView({
-                behavior: 'smooth'
-            });
-        }
-      });
-    });
-  }, []);
-
   return (
-    <div className="font-sans bg-[#f0f4f8] min-h-screen selection:bg-emerald-200 selection:text-emerald-900">
-      <Navbar />
-      <main>
-        <Hero />
-        <About />
-        <Features />
-        <Pricing />
-        <Testimonials />
-      </main>
-      <Footer />
-    </div>
+    <BrowserRouter>
+      <AuthProvider>
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/auth/callback" element={<AuthCallback />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
 
