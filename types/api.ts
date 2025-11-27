@@ -80,3 +80,15 @@ export interface InsightResponse {
   insight: string;
   month?: string;
 }
+
+export interface TransactionListParams {
+  month?: string;
+  categoryId?: string;
+  search?: string;
+  startDate?: string;
+  endDate?: string;
+  sortBy?: 'date' | 'amount';
+  sortOrder?: 'asc' | 'desc';
+  limit?: number;
+  offset?: number;
+}

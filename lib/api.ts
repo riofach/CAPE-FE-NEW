@@ -7,7 +7,8 @@ import type {
   PaginatedResponse,
   AiParseResult,
   AnalyticsData,
-  InsightResponse
+  InsightResponse,
+  TransactionListParams
 } from '../types/api';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
@@ -46,10 +47,15 @@ export const api = {
   },
   
   transactions: {
-    list: (params?: { month?: string; categoryId?: string; limit?: number; offset?: number }) => {
+    list: (params?: TransactionListParams) => {
       const searchParams = new URLSearchParams();
       if (params?.month) searchParams.set('month', params.month);
       if (params?.categoryId) searchParams.set('categoryId', params.categoryId);
+      if (params?.search) searchParams.set('search', params.search);
+      if (params?.startDate) searchParams.set('startDate', params.startDate);
+      if (params?.endDate) searchParams.set('endDate', params.endDate);
+      if (params?.sortBy) searchParams.set('sortBy', params.sortBy);
+      if (params?.sortOrder) searchParams.set('sortOrder', params.sortOrder);
       if (params?.limit) searchParams.set('limit', params.limit.toString());
       if (params?.offset) searchParams.set('offset', params.offset.toString());
       
@@ -64,6 +70,16 @@ export const api = {
       date?: string;
     }) => fetchApi<Transaction>('/api/transactions', {
       method: 'POST',
+      body: JSON.stringify(data)
+    }),
+    
+    update: (id: string, data: {
+      categoryId?: string;
+      amount?: number;
+      description?: string;
+      date?: string;
+    }) => fetchApi<Transaction>(`/api/transactions/${id}`, {
+      method: 'PUT',
       body: JSON.stringify(data)
     }),
     

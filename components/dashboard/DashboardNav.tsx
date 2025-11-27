@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { LogOut, User, LayoutDashboard, BarChart3 } from 'lucide-react';
+import { LogOut, User, LayoutDashboard, BarChart3, Receipt } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../../contexts/AuthContext';
 import { cn } from '../../lib/utils';
@@ -65,6 +65,18 @@ export const DashboardNav: React.FC = () => {
               >
                 <BarChart3 className="w-4 h-4" strokeWidth={1.5} />
                 <span className="hidden sm:block">Analytics</span>
+              </NavLink>
+              <NavLink
+                to="/transactions"
+                className={({ isActive }) => cn(
+                  "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200",
+                  isActive 
+                    ? "bg-white text-emerald-600 shadow-[2px_2px_8px_rgba(0,0,0,0.08)]" 
+                    : "text-slate-500 hover:text-slate-700"
+                )}
+              >
+                <Receipt className="w-4 h-4" strokeWidth={1.5} />
+                <span className="hidden sm:block">Transaksi</span>
               </NavLink>
             </div>
           </div>

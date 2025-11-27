@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { ArrowRight } from 'lucide-react';
 import { DashboardLayout } from '../components/dashboard/DashboardLayout';
 import { StatsCard } from '../components/dashboard/StatsCard';
 import { TransactionList } from '../components/dashboard/TransactionList';
@@ -43,7 +45,7 @@ export const Dashboard: React.FC = () => {
   const fetchTransactions = useCallback(async () => {
     setIsLoadingTransactions(true);
     try {
-      const response = await api.transactions.list({ month: currentMonth, limit: 50 });
+      const response = await api.transactions.list({ month: currentMonth, limit: 5 });
       if (response.data) {
         setTransactions(response.data);
       }
@@ -168,9 +170,13 @@ export const Dashboard: React.FC = () => {
             <h2 className="text-lg font-bold text-slate-800">
               Transaksi Terbaru
             </h2>
-            <span className="text-sm text-slate-500">
-              {transactions.length} transaksi
-            </span>
+            <Link 
+              to="/transactions" 
+              className="flex items-center gap-1 text-sm text-emerald-600 hover:text-emerald-700 font-medium transition-colors"
+            >
+              Lihat Semua
+              <ArrowRight className="w-4 h-4" strokeWidth={1.5} />
+            </Link>
           </div>
 
           <TransactionList
