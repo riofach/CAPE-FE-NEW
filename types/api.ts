@@ -1,0 +1,82 @@
+export interface Category {
+  id: string;
+  name: string;
+  type: 'EXPENSE' | 'INCOME';
+  iconSlug: string;
+  colorHex: string;
+  isGlobal: boolean;
+}
+
+export interface Transaction {
+  id: string;
+  userId: string;
+  categoryId: string | null;
+  amount: string;
+  description: string | null;
+  date: string;
+  isAiGenerated: boolean;
+  aiConfidence: number | null;
+  createdAt: string;
+  category: Category | null;
+}
+
+export interface TransactionStats {
+  month: string;
+  totalExpense: number;
+  totalIncome: number;
+  byCategory: Array<{
+    category: Pick<Category, 'id' | 'name' | 'iconSlug' | 'colorHex'> | null;
+    total: number;
+    count: number;
+  }>;
+}
+
+export interface ApiResponse<T> {
+  success: boolean;
+  data?: T;
+  error?: {
+    code: string;
+    message: string;
+  };
+}
+
+export interface PaginatedResponse<T> extends ApiResponse<T[]> {
+  pagination?: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+}
+
+export interface AiParseResult {
+  transaction: Transaction;
+  parsed: {
+    original: string;
+    detected: {
+      description: string;
+      amount: number;
+      categoryName: string;
+      confidence: number;
+      date?: string;
+    };
+  };
+}
+
+export interface AnalyticsData {
+  month: string;
+  totalExpense: number;
+  prevMonthExpense: number;
+  percentChange: number;
+  transactionCount: number;
+  topCategories: Array<{
+    category: Pick<Category, 'id' | 'name' | 'colorHex' | 'iconSlug'> | null;
+    total: number;
+    percentage: number;
+  }>;
+}
+
+export interface InsightResponse {
+  insight: string;
+  month?: string;
+}
