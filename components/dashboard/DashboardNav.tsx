@@ -1,12 +1,14 @@
 import React from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { LogOut, User, LayoutDashboard, BarChart3, Receipt } from 'lucide-react';
+import { LogOut, User, LayoutDashboard, BarChart3, Receipt, Settings } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../../contexts/AuthContext';
+import { useUserProfile } from '../../contexts/UserProfileContext';
 import { cn } from '../../lib/utils';
 
 export const DashboardNav: React.FC = () => {
   const { user, signOut } = useAuth();
+  const { profile } = useUserProfile();
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
@@ -78,6 +80,18 @@ export const DashboardNav: React.FC = () => {
                 <Receipt className="w-4 h-4" strokeWidth={1.5} />
                 <span className="hidden sm:block">Transaksi</span>
               </NavLink>
+              <NavLink
+                to="/settings"
+                className={({ isActive }) => cn(
+                  "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200",
+                  isActive 
+                    ? "bg-white text-emerald-600 shadow-[2px_2px_8px_rgba(0,0,0,0.08)]" 
+                    : "text-slate-500 hover:text-slate-700"
+                )}
+              >
+                <Settings className="w-4 h-4" strokeWidth={1.5} />
+                <span className="hidden sm:block">Settings</span>
+              </NavLink>
             </div>
           </div>
 
@@ -87,7 +101,7 @@ export const DashboardNav: React.FC = () => {
                 <User className="w-3.5 h-3.5 text-emerald-700" strokeWidth={1.5} />
               </div>
               <span className="text-sm text-emerald-700 font-medium max-w-[120px] truncate">
-                {user?.email?.split('@')[0]}
+                {profile?.fullName || user?.email?.split('@')[0]}
               </span>
             </div>
 

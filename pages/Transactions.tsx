@@ -7,11 +7,14 @@ import { TransactionList } from '../components/dashboard/TransactionList';
 import { EditTransactionDialog } from '../components/dashboard/EditTransactionDialog';
 import { api } from '../lib/api';
 import { cn } from '../lib/utils';
+import { useToast } from '../contexts/ToastContext';
 import type { Transaction, Category, TransactionListParams } from '../types/api';
 
 const ITEMS_PER_PAGE = 20;
 
 export const Transactions: React.FC = () => {
+  const toast = useToast();
+  
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [total, setTotal] = useState(0);
@@ -100,6 +103,9 @@ export const Transactions: React.FC = () => {
       await api.transactions.delete(id);
       setTransactions(prev => prev.filter(t => t.id !== id));
       setTotal(prev => prev - 1);
+      toast.success('Transaksi berhasil dihapus! 🗑️');
+    } catch (error: any) {
+      toast.error(error.message || 'Gagal menghapus transaksi 😵');
     } finally {
       setDeletingId(null);
     }
@@ -115,7 +121,10 @@ export const Transactions: React.FC = () => {
       const response = await api.transactions.update(id, data);
       if (response.data) {
         setTransactions(prev => prev.map(t => t.id === id ? response.data! : t));
+        toast.success('Transaksi berhasil diupdate! ✏️');
       }
+    } catch (error: any) {
+      toast.error(error.message || 'Gagal mengupdate transaksi 😵');
     } finally {
       setIsUpdating(false);
     }

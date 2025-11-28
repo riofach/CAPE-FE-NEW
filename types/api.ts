@@ -92,3 +92,12 @@ export interface TransactionListParams {
   limit?: number;
   offset?: number;
 }
+
+export interface UserProfile {
+  id: string;
+  email: string;
+  fullName: string | null;
+  role: 'CLIENT' | 'ADMIN';
+  authProvider: string;
+  createdAt: string;
+}

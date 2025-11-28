@@ -7,9 +7,12 @@ import { CategoryLegend } from '../components/dashboard/CategoryLegend';
 import { AIInsightWidget } from '../components/dashboard/AIInsightWidget';
 import { api } from '../lib/api';
 import { cn, formatPrice } from '../lib/utils';
+import { useToast } from '../contexts/ToastContext';
 import type { AnalyticsData } from '../types/api';
 
 export const Analytics: React.FC = () => {
+  const toast = useToast();
+  
   const [currentMonth, setCurrentMonth] = useState(() => {
     const now = new Date();
     return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
@@ -25,12 +28,13 @@ export const Analytics: React.FC = () => {
       if (response.data) {
         setAnalytics(response.data);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to fetch analytics:', error);
+      toast.error('Gagal memuat data analytics 😵');
     } finally {
       setIsLoading(false);
     }
-  }, [currentMonth]);
+  }, [currentMonth, toast]);
 
   useEffect(() => {
     fetchAnalytics();
