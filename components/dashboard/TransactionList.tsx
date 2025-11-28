@@ -1,24 +1,22 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trash2, Sparkles, Calendar, AlertCircle, Pencil } from 'lucide-react';
+import { Sparkles, Calendar, AlertCircle } from 'lucide-react';
 import { cn, formatPrice } from '../../lib/utils';
 import { CategoryIcon } from '../ui/dynamic-icon';
 import type { Transaction } from '../../types/api';
 
 interface TransactionListProps {
   transactions: Transaction[];
-  onDelete: (id: string) => void;
-  onEdit?: (transaction: Transaction) => void;
+  onCardClick: (transaction: Transaction) => void;
   isLoading?: boolean;
-  isDeleting?: string | null;
+  highlightId?: string | null;
 }
 
 export const TransactionList: React.FC<TransactionListProps> = ({
   transactions,
-  onDelete,
-  onEdit,
+  onCardClick,
   isLoading,
-  isDeleting
+  highlightId
 }) => {
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
@@ -86,13 +84,15 @@ export const TransactionList: React.FC<TransactionListProps> = ({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, x: -100 }}
             transition={{ delay: index * 0.05 }}
+            onClick={() => onCardClick(transaction)}
             className={cn(
-              "p-4 rounded-2xl",
+              "p-4 rounded-2xl cursor-pointer",
               "bg-white/60 backdrop-blur-sm",
               "shadow-[inset_4px_4px_8px_#ffffff,inset_-2px_-2px_6px_#d1d5db]",
-              "group hover:shadow-[inset_6px_6px_12px_#ffffff,inset_-3px_-3px_8px_#d1d5db]",
+              "hover:shadow-[inset_6px_6px_12px_#ffffff,inset_-3px_-3px_8px_#d1d5db]",
+              "active:scale-[0.99]",
               "transition-all duration-300",
-              isDeleting === transaction.id && "opacity-50"
+              highlightId === transaction.id && "opacity-50"
             )}
           >
             <div className="flex items-center gap-4">
@@ -134,7 +134,7 @@ export const TransactionList: React.FC<TransactionListProps> = ({
               </div>
 
               {/* Amount */}
-              <div className="text-right">
+              <div className="text-right shrink-0">
                 <p className={cn(
                   "font-bold",
                   transaction.category?.type === 'INCOME' ? "text-emerald-600" : "text-rose-600"
@@ -143,39 +143,6 @@ export const TransactionList: React.FC<TransactionListProps> = ({
                   {formatPrice(parseFloat(transaction.amount))}
                 </p>
               </div>
-
-              {/* Edit Button */}
-              {onEdit && (
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  onClick={() => onEdit(transaction)}
-                  className={cn(
-                    "w-8 h-8 rounded-lg flex items-center justify-center",
-                    "bg-transparent opacity-0 group-hover:opacity-100",
-                    "hover:bg-emerald-100 text-slate-400 hover:text-emerald-500",
-                    "transition-all duration-200"
-                  )}
-                >
-                  <Pencil className="w-4 h-4" strokeWidth={1.5} />
-                </motion.button>
-              )}
-
-              {/* Delete Button */}
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => onDelete(transaction.id)}
-                disabled={isDeleting === transaction.id}
-                className={cn(
-                  "w-8 h-8 rounded-lg flex items-center justify-center",
-                  "bg-transparent opacity-0 group-hover:opacity-100",
-                  "hover:bg-rose-100 text-slate-400 hover:text-rose-500",
-                  "transition-all duration-200"
-                )}
-              >
-                <Trash2 className="w-4 h-4" strokeWidth={1.5} />
-              </motion.button>
             </div>
           </motion.div>
         ))}

@@ -16,7 +16,7 @@ export const Button: React.FC<ButtonProps> = ({
   size = 'md',
   ...props 
 }) => {
-  const baseStyles = "font-heading font-bold rounded-2xl transition-all duration-200 flex items-center justify-center gap-2 relative overflow-hidden active:scale-95";
+  const baseStyles = "font-heading font-bold rounded-2xl transition-all duration-200 flex items-center justify-center gap-2 relative overflow-hidden active:scale-95 cursor-pointer";
   
   const variants = {
     primary: "bg-[#10b981] text-white shadow-[6px_6px_12px_#6ee7b7,-6px_-6px_12px_#ffffff] hover:shadow-[inset_4px_4px_8px_#059669,inset_-4px_-4px_8px_#34d399]",

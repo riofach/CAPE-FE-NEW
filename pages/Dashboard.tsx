@@ -7,6 +7,8 @@ import { StatsCard } from '../components/dashboard/StatsCard';
 import { TransactionList } from '../components/dashboard/TransactionList';
 import { AISmartInput } from '../components/dashboard/AISmartInput';
 import { ManualEntryDialog } from '../components/dashboard/ManualEntryDialog';
+import { TransactionDetailDialog } from '../components/dashboard/TransactionDetailDialog';
+import { ClayConfirmDialog } from '../components/ui/clay-confirm-dialog';
 import { api } from '../lib/api';
 import { useToast } from '../contexts/ToastContext';
 import type { Transaction, Category, TransactionStats } from '../types/api';
@@ -30,6 +32,8 @@ export const Dashboard: React.FC = () => {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   
   const [showManualEntry, setShowManualEntry] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<Transaction | null>(null);
+  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
 
   const fetchStats = useCallback(async () => {
     setIsLoadingStats(true);
@@ -139,6 +143,27 @@ export const Dashboard: React.FC = () => {
     }
   };
 
+  const handleCardClick = (transaction: Transaction) => {
+    setSelectedTransaction(transaction);
+  };
+
+  const handleEditFromDetail = () => {
+    // Dashboard doesn't have edit functionality, close detail and show toast
+    setSelectedTransaction(null);
+    toast.error('Edit transaksi tersedia di halaman Riwayat Transaksi');
+  };
+
+  const handleDeleteFromDetail = (transaction: Transaction) => {
+    setSelectedTransaction(null);
+    setDeleteTarget(transaction);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
+    await handleDelete(deleteTarget.id);
+    setDeleteTarget(null);
+  };
+
   return (
     <DashboardLayout>
       <div className="space-y-6">
@@ -193,9 +218,9 @@ export const Dashboard: React.FC = () => {
 
           <TransactionList
             transactions={transactions}
-            onDelete={handleDelete}
+            onCardClick={handleCardClick}
             isLoading={isLoadingTransactions}
-            isDeleting={deletingId}
+            highlightId={deletingId}
           />
         </motion.div>
       </div>
@@ -207,6 +232,28 @@ export const Dashboard: React.FC = () => {
         categories={categories}
         onSubmit={handleManualSubmit}
         isLoading={isCreating}
+      />
+
+      {/* Transaction Detail Dialog */}
+      <TransactionDetailDialog
+        open={!!selectedTransaction}
+        onClose={() => setSelectedTransaction(null)}
+        transaction={selectedTransaction}
+        onEdit={handleEditFromDetail}
+        onDelete={handleDeleteFromDetail}
+      />
+
+      {/* Delete Confirmation Dialog */}
+      <ClayConfirmDialog
+        open={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleConfirmDelete}
+        title="Hapus Transaksi?"
+        message={`Yakin ingin menghapus transaksi "${deleteTarget?.description || 'ini'}"? Aksi ini tidak dapat dibatalkan.`}
+        confirmText="Hapus"
+        cancelText="Batal"
+        variant="danger"
+        isLoading={!!deletingId}
       />
     </DashboardLayout>
   );
