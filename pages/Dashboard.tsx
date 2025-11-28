@@ -8,9 +8,12 @@ import { TransactionList } from '../components/dashboard/TransactionList';
 import { AISmartInput } from '../components/dashboard/AISmartInput';
 import { ManualEntryDialog } from '../components/dashboard/ManualEntryDialog';
 import { api } from '../lib/api';
+import { useToast } from '../contexts/ToastContext';
 import type { Transaction, Category, TransactionStats } from '../types/api';
 
 export const Dashboard: React.FC = () => {
+  const toast = useToast();
+  
   const [currentMonth, setCurrentMonth] = useState(() => {
     const now = new Date();
     return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
@@ -96,6 +99,9 @@ export const Dashboard: React.FC = () => {
     try {
       await api.transactions.parseWithAi(input);
       await Promise.all([fetchStats(), fetchTransactions()]);
+      toast.success('Transaksi berhasil disimpan! 💰');
+    } catch (error: any) {
+      toast.error(error.message || 'Gagal memproses input AI 😵');
     } finally {
       setIsAiProcessing(false);
     }
@@ -111,6 +117,9 @@ export const Dashboard: React.FC = () => {
     try {
       await api.transactions.create(data);
       await Promise.all([fetchStats(), fetchTransactions()]);
+      toast.success('Transaksi berhasil ditambahkan! ✨');
+    } catch (error: any) {
+      toast.error(error.message || 'Gagal menambahkan transaksi 😵');
     } finally {
       setIsCreating(false);
     }
@@ -122,6 +131,9 @@ export const Dashboard: React.FC = () => {
       await api.transactions.delete(id);
       setTransactions(prev => prev.filter(t => t.id !== id));
       await fetchStats();
+      toast.success('Transaksi berhasil dihapus! 🗑️');
+    } catch (error: any) {
+      toast.error(error.message || 'Gagal menghapus transaksi 😵');
     } finally {
       setDeletingId(null);
     }

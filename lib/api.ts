@@ -8,7 +8,8 @@ import type {
   AiParseResult,
   AnalyticsData,
   InsightResponse,
-  TransactionListParams
+  TransactionListParams,
+  UserProfile
 } from '../types/api';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
@@ -108,5 +109,15 @@ export const api = {
       method: 'POST',
       body: JSON.stringify({ month })
     })
+  },
+  
+  users: {
+    getProfile: () => fetchApi<UserProfile>('/api/users/profile'),
+    
+    updateProfile: (data: { fullName?: string }) => 
+      fetchApi<UserProfile>('/api/users/profile', {
+        method: 'PUT',
+        body: JSON.stringify(data)
+      })
   }
 };

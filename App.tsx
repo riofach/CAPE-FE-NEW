@@ -1,6 +1,8 @@
 import React, { Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
+import { ToastProvider } from './contexts/ToastContext';
+import { UserProfileProvider } from './contexts/UserProfileContext';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
 
 // Lazy load pages for code splitting
@@ -11,6 +13,7 @@ const AuthCallback = lazy(() => import('./pages/AuthCallback').then(m => ({ defa
 const Dashboard = lazy(() => import('./pages/Dashboard').then(m => ({ default: m.Dashboard })));
 const Analytics = lazy(() => import('./pages/Analytics').then(m => ({ default: m.Analytics })));
 const Transactions = lazy(() => import('./pages/Transactions').then(m => ({ default: m.Transactions })));
+const Settings = lazy(() => import('./pages/Settings').then(m => ({ default: m.Settings })));
 
 // Loading fallback
 const PageLoader = () => (
@@ -22,9 +25,11 @@ const PageLoader = () => (
 function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <Suspense fallback={<PageLoader />}>
-          <Routes>
+      <ToastProvider>
+        <AuthProvider>
+          <UserProfileProvider>
+            <Suspense fallback={<PageLoader />}>
+              <Routes>
             <Route path="/" element={<Landing />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
@@ -53,9 +58,19 @@ function App() {
                 </ProtectedRoute>
               }
             />
-          </Routes>
-        </Suspense>
-      </AuthProvider>
+            <Route
+              path="/settings"
+              element={
+                <ProtectedRoute>
+                  <Settings />
+                </ProtectedRoute>
+              }
+            />
+              </Routes>
+            </Suspense>
+          </UserProfileProvider>
+        </AuthProvider>
+      </ToastProvider>
     </BrowserRouter>
   );
 }
