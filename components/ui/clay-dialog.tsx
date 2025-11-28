@@ -36,7 +36,7 @@ export const ClayDialog: React.FC<ClayDialogProps> = ({
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             className={cn(
               "fixed left-1/2 top-1/2 z-50 -translate-x-1/2 -translate-y-1/2",
-              "w-full max-w-md mx-4",
+              "w-[calc(100%-2rem)] max-w-md",
               "rounded-3xl p-6",
               "bg-[#f0f4f8]",
               "shadow-[20px_20px_60px_#c8d0e7,-20px_-20px_60px_#ffffff]",
@@ -51,7 +51,7 @@ export const ClayDialog: React.FC<ClayDialogProps> = ({
                 whileTap={{ scale: 0.9 }}
                 onClick={onClose}
                 className={cn(
-                  "w-8 h-8 rounded-xl flex items-center justify-center",
+                  "w-8 h-8 rounded-xl flex items-center justify-center cursor-pointer",
                   "bg-white/80 hover:bg-slate-100",
                   "text-slate-400 hover:text-slate-600",
                   "shadow-[inset_2px_2px_4px_#ffffff,inset_-2px_-2px_4px_#d1d5db]",

@@ -5,6 +5,8 @@ import { DashboardLayout } from '../components/dashboard/DashboardLayout';
 import { TransactionFilters } from '../components/dashboard/TransactionFilters';
 import { TransactionList } from '../components/dashboard/TransactionList';
 import { EditTransactionDialog } from '../components/dashboard/EditTransactionDialog';
+import { TransactionDetailDialog } from '../components/dashboard/TransactionDetailDialog';
+import { ClayConfirmDialog } from '../components/ui/clay-confirm-dialog';
 import { api } from '../lib/api';
 import { cn } from '../lib/utils';
 import { useToast } from '../contexts/ToastContext';
@@ -33,6 +35,8 @@ export const Transactions: React.FC = () => {
   const [isUpdating, setIsUpdating] = useState(false);
   
   const [editTransaction, setEditTransaction] = useState<Transaction | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<Transaction | null>(null);
+  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
 
   const fetchTransactions = useCallback(async (append = false) => {
     if (append) {
@@ -111,8 +115,18 @@ export const Transactions: React.FC = () => {
     }
   };
 
-  const handleEdit = (transaction: Transaction) => {
+  const handleCardClick = (transaction: Transaction) => {
+    setSelectedTransaction(transaction);
+  };
+
+  const handleEditFromDetail = (transaction: Transaction) => {
+    setSelectedTransaction(null);
     setEditTransaction(transaction);
+  };
+
+  const handleDeleteFromDetail = (transaction: Transaction) => {
+    setSelectedTransaction(null);
+    setDeleteTarget(transaction);
   };
 
   const handleUpdate = async (id: string, data: { categoryId?: string; amount?: number; description?: string; date?: string }) => {
@@ -128,6 +142,12 @@ export const Transactions: React.FC = () => {
     } finally {
       setIsUpdating(false);
     }
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
+    await handleDelete(deleteTarget.id);
+    setDeleteTarget(null);
   };
 
   const hasMore = transactions.length < total;
@@ -178,10 +198,9 @@ export const Transactions: React.FC = () => {
         {/* Transaction List */}
         <TransactionList
           transactions={transactions}
-          onDelete={handleDelete}
-          onEdit={handleEdit}
+          onCardClick={handleCardClick}
           isLoading={isLoading}
-          isDeleting={deletingId}
+          highlightId={deletingId}
         />
 
         {/* Load More Button */}
@@ -223,6 +242,15 @@ export const Transactions: React.FC = () => {
         )}
       </div>
 
+      {/* Transaction Detail Dialog */}
+      <TransactionDetailDialog
+        open={!!selectedTransaction}
+        onClose={() => setSelectedTransaction(null)}
+        transaction={selectedTransaction}
+        onEdit={handleEditFromDetail}
+        onDelete={handleDeleteFromDetail}
+      />
+
       {/* Edit Dialog */}
       <EditTransactionDialog
         open={!!editTransaction}
@@ -231,6 +259,19 @@ export const Transactions: React.FC = () => {
         categories={categories}
         onSubmit={handleUpdate}
         isLoading={isUpdating}
+      />
+
+      {/* Delete Confirmation Dialog */}
+      <ClayConfirmDialog
+        open={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleConfirmDelete}
+        title="Hapus Transaksi?"
+        message={`Yakin ingin menghapus transaksi "${deleteTarget?.description || 'ini'}"? Aksi ini tidak dapat dibatalkan.`}
+        confirmText="Hapus"
+        cancelText="Batal"
+        variant="danger"
+        isLoading={!!deletingId}
       />
     </DashboardLayout>
   );

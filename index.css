@@ -47,3 +47,20 @@ body {
   background-color: #f0f4f8;
   color: #475569;
 }
+
+/* Interactive elements cursor */
+button,
+[role="button"],
+a[href],
+input[type="submit"],
+input[type="button"],
+select,
+.cursor-pointer {
+  cursor: pointer;
+}
+
+/* Disabled state */
+button:disabled,
+[disabled] {
+  cursor: not-allowed;
+}
