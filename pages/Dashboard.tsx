@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { DashboardLayout } from '../components/dashboard/DashboardLayout';
@@ -15,6 +15,7 @@ import type { Transaction, Category, TransactionStats } from '../types/api';
 
 export const Dashboard: React.FC = () => {
   const toast = useToast();
+  const navigate = useNavigate();
   
   const [currentMonth, setCurrentMonth] = useState(() => {
     const now = new Date();
@@ -147,10 +148,10 @@ export const Dashboard: React.FC = () => {
     setSelectedTransaction(transaction);
   };
 
-  const handleEditFromDetail = () => {
-    // Dashboard doesn't have edit functionality, close detail and show toast
+  const handleEditFromDetail = (transaction: Transaction) => {
     setSelectedTransaction(null);
-    toast.error('Edit transaksi tersedia di halaman Riwayat Transaksi');
+    // Navigate to Transactions page with edit intent
+    navigate('/transactions', { state: { editTransactionId: transaction.id } });
   };
 
   const handleDeleteFromDetail = (transaction: Transaction) => {
