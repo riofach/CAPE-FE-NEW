@@ -6,6 +6,7 @@ import { ClayCard } from '../components/ui/clay-card';
 import { ClayInput } from '../components/ui/clay-input';
 import { Button } from '../components/ui/button';
 import { useAuth } from '../contexts/AuthContext';
+import { api } from '../lib/api';
 
 export const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -26,7 +27,17 @@ export const Login: React.FC = () => {
       setError(error.message);
       setLoading(false);
     } else {
-      navigate('/dashboard');
+      // Check user role and redirect accordingly
+      try {
+        const response = await api.users.getProfile();
+        if (response.data?.role === 'ADMIN') {
+          navigate('/admin/users');
+        } else {
+          navigate('/dashboard');
+        }
+      } catch {
+        navigate('/dashboard');
+      }
     }
   };
 

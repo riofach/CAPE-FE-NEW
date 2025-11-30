@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
@@ -15,6 +15,14 @@ export const AdminRoute: React.FC<AdminRouteProps> = ({ children }) => {
   const [checking, setChecking] = useState(true);
   const location = useLocation();
   const toast = useToast();
+  const hasChecked = useRef(false);
+
+  // Reset check when user changes (e.g., logout/login with different account)
+  useEffect(() => {
+    hasChecked.current = false;
+    setIsAdmin(null);
+    setChecking(true);
+  }, [user?.id]);
 
   useEffect(() => {
     const checkAdminRole = async () => {
@@ -22,6 +30,9 @@ export const AdminRoute: React.FC<AdminRouteProps> = ({ children }) => {
         setChecking(false);
         return;
       }
+
+      if (hasChecked.current) return;
+      hasChecked.current = true;
 
       try {
         const response = await api.users.getProfile();

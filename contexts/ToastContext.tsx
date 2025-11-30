@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback, useMemo } from 'react';
 import { ToastContainer, ToastData } from '../components/ui/clay-toast';
 
 interface ToastContextType {
@@ -20,7 +20,6 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
 
       setToasts((prev) => [...prev, newToast]);
 
-      // Auto dismiss after 4 seconds
       setTimeout(() => {
         setToasts((prev) => prev.filter((t) => t.id !== id));
       }, 4000);
@@ -42,8 +41,10 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
     [addToast]
   );
 
+  const contextValue = useMemo(() => ({ success, error }), [success, error]);
+
   return (
-    <ToastContext.Provider value={{ success, error }}>
+    <ToastContext.Provider value={contextValue}>
       {children}
       <ToastContainer toasts={toasts} onDismiss={dismissToast} />
     </ToastContext.Provider>

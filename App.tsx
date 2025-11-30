@@ -1,9 +1,10 @@
 import React, { Suspense, lazy } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { ToastProvider } from './contexts/ToastContext';
 import { UserProfileProvider } from './contexts/UserProfileContext';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
+import { AdminRoute } from './components/auth/AdminRoute';
 
 // Lazy load pages for code splitting
 const Landing = lazy(() => import('./pages/Landing').then(m => ({ default: m.Landing })));
@@ -14,6 +15,10 @@ const Dashboard = lazy(() => import('./pages/Dashboard').then(m => ({ default: m
 const Analytics = lazy(() => import('./pages/Analytics').then(m => ({ default: m.Analytics })));
 const Transactions = lazy(() => import('./pages/Transactions').then(m => ({ default: m.Transactions })));
 const Settings = lazy(() => import('./pages/Settings').then(m => ({ default: m.Settings })));
+
+// Admin pages
+const UserManagement = lazy(() => import('./pages/admin/UserManagement').then(m => ({ default: m.UserManagement })));
+const CategoryManagement = lazy(() => import('./pages/admin/CategoryManagement').then(m => ({ default: m.CategoryManagement })));
 
 // Loading fallback
 const PageLoader = () => (
@@ -66,6 +71,25 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            
+            {/* Admin Routes */}
+            <Route
+              path="/admin/users"
+              element={
+                <AdminRoute>
+                  <UserManagement />
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="/admin/categories"
+              element={
+                <AdminRoute>
+                  <CategoryManagement />
+                </AdminRoute>
+              }
+            />
+            <Route path="/admin" element={<Navigate to="/admin/users" replace />} />
               </Routes>
             </Suspense>
           </UserProfileProvider>

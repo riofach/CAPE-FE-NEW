@@ -34,7 +34,8 @@ export const Analytics: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [currentMonth, toast]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentMonth]);
 
   useEffect(() => {
     fetchAnalytics();

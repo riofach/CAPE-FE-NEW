@@ -165,7 +165,7 @@ export const api = {
         }),
       
       delete: (id: string) =>
-        fetchApi<{ message: string; orphanedTransactions: number }>(`/api/admin/categories/${id}`, {
+        fetchApi<{ message: string; affectedTransactions: number }>(`/api/admin/categories/${id}`, {
           method: 'DELETE'
         })
     }

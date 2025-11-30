@@ -1,48 +1,47 @@
-import React from 'react';
-import { 
-  Utensils, 
-  Car, 
-  ShoppingBag, 
-  Receipt, 
-  Film, 
-  Heart,
-  HeartPulse,
-  GraduationCap,
-  BookOpen,
-  MoreHorizontal,
-  Briefcase,
-  Gift,
-  PiggyBank,
-  Wallet,
-  TrendingUp,
-  Laptop,
-  PlusCircle,
-  Gamepad2,
-  HelpCircle,
-  type LucideIcon 
-} from 'lucide-react';
+import React, { lazy, Suspense, memo } from 'react';
+import { LucideProps } from 'lucide-react';
+import dynamicIconImports from 'lucide-react/dynamicIconImports';
 import { cn } from '../../lib/utils';
 
-const iconMap: Record<string, LucideIcon> = {
-  'utensils': Utensils,
-  'car': Car,
-  'shopping-bag': ShoppingBag,
-  'receipt': Receipt,
-  'film': Film,
-  'heart': Heart,
-  'heart-pulse': HeartPulse,
-  'graduation-cap': GraduationCap,
-  'book-open': BookOpen,
-  'more-horizontal': MoreHorizontal,
-  'briefcase': Briefcase,
-  'gift': Gift,
-  'piggy-bank': PiggyBank,
-  'wallet': Wallet,
-  'trending-up': TrendingUp,
-  'laptop': Laptop,
-  'plus-circle': PlusCircle,
-  'gamepad-2': Gamepad2,
+// Cache for loaded icon components
+const iconCache = new Map<string, React.LazyExoticComponent<React.FC<LucideProps>>>();
+
+// Get or create lazy icon component
+const getIconComponent = (name: string) => {
+  if (!iconCache.has(name)) {
+    const importFn = dynamicIconImports[name as keyof typeof dynamicIconImports];
+    if (importFn) {
+      iconCache.set(name, lazy(importFn));
+    }
+  }
+  return iconCache.get(name);
 };
+
+// Loading placeholder
+const IconPlaceholder: React.FC<{ size?: number }> = ({ size = 20 }) => (
+  <div 
+    className="animate-pulse bg-slate-200 rounded"
+    style={{ width: size, height: size }}
+  />
+);
+
+// Fallback icon when name not found
+const FallbackIcon: React.FC<{ size?: number; color?: string }> = ({ size = 20, color }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke={color || "currentColor"}
+    strokeWidth={1.5}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <circle cx="12" cy="12" r="10" />
+    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+    <path d="M12 17h.01" />
+  </svg>
+);
 
 interface DynamicIconProps {
   name: string;
@@ -51,23 +50,34 @@ interface DynamicIconProps {
   color?: string;
 }
 
-export const DynamicIcon: React.FC<DynamicIconProps> = ({ 
+export const DynamicIcon: React.FC<DynamicIconProps> = memo(({ 
   name, 
   className,
   size = 20,
   color
 }) => {
-  const Icon = iconMap[name] || HelpCircle;
+  const IconComponent = getIconComponent(name);
+  
+  if (!IconComponent) {
+    return <FallbackIcon size={size} color={color} />;
+  }
   
   return (
-    <Icon 
-      className={cn("shrink-0", className)} 
-      size={size} 
-      strokeWidth={1.5}
-      color={color}
-    />
+    <Suspense fallback={<IconPlaceholder size={size} />}>
+      <IconComponent 
+        className={cn("shrink-0", className)} 
+        size={size} 
+        strokeWidth={1.5}
+        color={color}
+      />
+    </Suspense>
   );
-};
+});
+
+DynamicIcon.displayName = 'DynamicIcon';
+
+// Export list of all available icon names
+export const allIconNames = Object.keys(dynamicIconImports);
 
 interface CategoryIconProps {
   iconSlug: string;
