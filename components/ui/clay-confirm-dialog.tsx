@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, AlertTriangle } from 'lucide-react';
 import { cn } from '../../lib/utils';
@@ -26,6 +26,25 @@ export const ClayConfirmDialog: React.FC<ClayConfirmDialogProps> = ({
   variant = 'danger',
   isLoading = false
 }) => {
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  // Handle Escape key to close dialog
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && open && !isLoading) {
+        onClose();
+      }
+    };
+
+    if (open) {
+      document.addEventListener('keydown', handleKeyDown);
+      // Focus dialog for accessibility
+      setTimeout(() => dialogRef.current?.focus(), 100);
+    }
+
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [open, onClose, isLoading]);
+
   const variantStyles = {
     danger: {
       icon: 'bg-rose-100 text-rose-600',
@@ -58,6 +77,12 @@ export const ClayConfirmDialog: React.FC<ClayConfirmDialogProps> = ({
           
           {/* Dialog */}
           <motion.div
+            ref={dialogRef}
+            tabIndex={-1}
+            role="alertdialog"
+            aria-modal="true"
+            aria-labelledby="confirm-dialog-title"
+            aria-describedby="confirm-dialog-message"
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -67,7 +92,8 @@ export const ClayConfirmDialog: React.FC<ClayConfirmDialogProps> = ({
               "rounded-3xl p-6",
               "bg-[#f0f4f8]",
               "shadow-[20px_20px_60px_#c8d0e7,-20px_-20px_60px_#ffffff]",
-              "border border-white/40"
+              "border border-white/40",
+              "outline-none"
             )}
           >
             {/* Close Button */}
@@ -102,8 +128,8 @@ export const ClayConfirmDialog: React.FC<ClayConfirmDialogProps> = ({
             
             {/* Content */}
             <div className="text-center mb-6">
-              <h2 className="text-xl font-bold text-slate-800 mb-2">{title}</h2>
-              <p className="text-slate-600">{message}</p>
+              <h2 id="confirm-dialog-title" className="text-xl font-bold text-slate-800 mb-2">{title}</h2>
+              <p id="confirm-dialog-message" className="text-slate-600">{message}</p>
             </div>
             
             {/* Actions */}

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { RefreshCw } from 'lucide-react';
 import { DashboardLayout } from '../components/dashboard/DashboardLayout';
@@ -16,6 +17,7 @@ const ITEMS_PER_PAGE = 20;
 
 export const Transactions: React.FC = () => {
   const toast = useToast();
+  const location = useLocation();
   
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -92,6 +94,19 @@ export const Transactions: React.FC = () => {
     setOffset(0);
     fetchTransactions(false);
   }, [filters]);
+
+  // Handle navigation from Dashboard with edit intent
+  useEffect(() => {
+    const state = location.state as { editTransactionId?: string } | null;
+    if (state?.editTransactionId && transactions.length > 0) {
+      const transactionToEdit = transactions.find(t => t.id === state.editTransactionId);
+      if (transactionToEdit) {
+        setEditTransaction(transactionToEdit);
+        // Clear the state to prevent re-opening on refresh
+        window.history.replaceState({}, document.title);
+      }
+    }
+  }, [location.state, transactions]);
 
   const handleFilterChange = (newFilters: Partial<TransactionListParams>) => {
     setFilters(prev => ({ ...prev, ...newFilters }));
