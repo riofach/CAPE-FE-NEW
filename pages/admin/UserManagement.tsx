@@ -8,11 +8,13 @@ import { ClayConfirmDialog } from '../../components/ui/clay-confirm-dialog';
 import { CreateAdminDialog } from '../../components/admin/CreateAdminDialog';
 import { api } from '../../lib/api';
 import { useToast } from '../../contexts/ToastContext';
+import { useAuth } from '../../contexts/AuthContext';
 import { cn } from '../../lib/utils';
 import type { AdminUser } from '../../types/api';
 
 export const UserManagement: React.FC = () => {
   const toast = useToast();
+  const { user: currentUser } = useAuth();
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -227,15 +229,19 @@ export const UserManagement: React.FC = () => {
                         </div>
                       </div>
                     </div>
-                    <Button
-                      variant="secondary"
-                      size="sm"
-                      onClick={() => setDeleteTarget(user)}
-                      disabled={deletingId === user.id}
-                      className="shrink-0 !text-rose-600 hover:!bg-rose-50"
-                    >
-                      <Trash2 className="w-4 h-4" strokeWidth={1.5} />
-                    </Button>
+                    {currentUser?.id !== user.id ? (
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => setDeleteTarget(user)}
+                        disabled={deletingId === user.id}
+                        className="shrink-0 !text-rose-600 hover:!bg-rose-50"
+                      >
+                        <Trash2 className="w-4 h-4" strokeWidth={1.5} />
+                      </Button>
+                    ) : (
+                      <span className="text-xs text-slate-400 italic px-2">Akun Anda</span>
+                    )}
                   </div>
                 </ClayCard>
               </div>

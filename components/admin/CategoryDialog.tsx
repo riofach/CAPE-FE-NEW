@@ -108,6 +108,7 @@ export const CategoryDialog: React.FC<CategoryDialogProps> = ({
   const [type, setType] = useState<'EXPENSE' | 'INCOME'>('EXPENSE');
   const [iconSlug, setIconSlug] = useState('utensils');
   const [colorHex, setColorHex] = useState('#6366F1');
+  const [keywords, setKeywords] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<{ name?: string }>({});
 
@@ -119,6 +120,7 @@ export const CategoryDialog: React.FC<CategoryDialogProps> = ({
       setType(editCategory.type);
       setIconSlug(editCategory.iconSlug);
       setColorHex(editCategory.colorHex);
+      setKeywords(editCategory.keywords || '');
     } else {
       resetForm();
     }
@@ -152,6 +154,7 @@ export const CategoryDialog: React.FC<CategoryDialogProps> = ({
         if (type !== editCategory.type) updateData.type = type;
         if (iconSlug !== editCategory.iconSlug) updateData.iconSlug = iconSlug;
         if (colorHex !== editCategory.colorHex) updateData.colorHex = colorHex;
+        if (keywords !== (editCategory.keywords || '')) updateData.keywords = keywords.trim();
 
         const response = await api.admin.categories.update(editCategory.id, updateData);
         if (response.data) {
@@ -163,7 +166,8 @@ export const CategoryDialog: React.FC<CategoryDialogProps> = ({
           name: name.trim(),
           type,
           iconSlug,
-          colorHex
+          colorHex,
+          keywords: keywords.trim() || undefined
         };
 
         const response = await api.admin.categories.create(createData);
@@ -185,6 +189,7 @@ export const CategoryDialog: React.FC<CategoryDialogProps> = ({
     setType('EXPENSE');
     setIconSlug('utensils');
     setColorHex('#6366F1');
+    setKeywords('');
     setErrors({});
   };
 
@@ -258,6 +263,31 @@ export const CategoryDialog: React.FC<CategoryDialogProps> = ({
           value={colorHex} 
           onChange={setColorHex}
         />
+
+        {/* Keywords for AI */}
+        <div>
+          <label className="block text-sm font-medium text-slate-600 mb-2">
+            Keywords untuk AI
+            <span className="text-xs text-slate-400 ml-1">(opsional)</span>
+          </label>
+          <textarea
+            value={keywords}
+            onChange={(e) => setKeywords(e.target.value)}
+            placeholder="bensin, pertamax, pertalite, solar, spbu"
+            rows={2}
+            className={cn(
+              "w-full px-4 py-3 rounded-2xl resize-none",
+              "bg-[#f0f4f8] text-slate-700 placeholder:text-slate-400",
+              "shadow-[inset_4px_4px_8px_#d1d9e6,inset_-4px_-4px_8px_#ffffff]",
+              "border border-white/40",
+              "focus:outline-none focus:ring-2 focus:ring-violet-400/50",
+              "transition-all duration-200"
+            )}
+          />
+          <p className="text-xs text-slate-400 mt-1">
+            Pisahkan dengan koma. AI akan gunakan keywords ini untuk mencocokkan kategori.
+          </p>
+        </div>
 
         {/* Preview */}
         <div className="pt-2">

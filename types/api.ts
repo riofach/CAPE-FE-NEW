@@ -4,6 +4,7 @@ export interface Category {
   type: 'EXPENSE' | 'INCOME';
   iconSlug: string;
   colorHex: string;
+  keywords?: string | null;
   isGlobal: boolean;
 }
 
@@ -133,6 +134,7 @@ export interface CreateCategoryInput {
   type: 'EXPENSE' | 'INCOME';
   iconSlug?: string;
   colorHex?: string;
+  keywords?: string;
 }
 
 export interface UpdateCategoryInput {
@@ -140,4 +142,5 @@ export interface UpdateCategoryInput {
   type?: 'EXPENSE' | 'INCOME';
   iconSlug?: string;
   colorHex?: string;
+  keywords?: string;
 }
