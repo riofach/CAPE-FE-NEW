@@ -9,7 +9,12 @@ import type {
   AnalyticsData,
   InsightResponse,
   TransactionListParams,
-  UserProfile
+  UserProfile,
+  AdminUser,
+  AdminUserListParams,
+  CreateAdminInput,
+  CreateCategoryInput,
+  UpdateCategoryInput
 } from '../types/api';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
@@ -119,5 +124,50 @@ export const api = {
         method: 'PUT',
         body: JSON.stringify(data)
       })
+  },
+
+  admin: {
+    users: {
+      list: (params?: AdminUserListParams) => {
+        const searchParams = new URLSearchParams();
+        if (params?.search) searchParams.set('search', params.search);
+        if (params?.role) searchParams.set('role', params.role);
+        if (params?.page) searchParams.set('page', params.page.toString());
+        if (params?.limit) searchParams.set('limit', params.limit.toString());
+        
+        const query = searchParams.toString();
+        return fetchApi<AdminUser[]>(`/api/admin/users${query ? `?${query}` : ''}`) as Promise<PaginatedResponse<AdminUser>>;
+      },
+      
+      create: (data: CreateAdminInput) => 
+        fetchApi<AdminUser>('/api/admin/users', {
+          method: 'POST',
+          body: JSON.stringify(data)
+        }),
+      
+      delete: (id: string) => 
+        fetchApi<{ message: string }>(`/api/admin/users/${id}`, {
+          method: 'DELETE'
+        })
+    },
+    
+    categories: {
+      create: (data: CreateCategoryInput) =>
+        fetchApi<Category>('/api/admin/categories', {
+          method: 'POST',
+          body: JSON.stringify(data)
+        }),
+      
+      update: (id: string, data: UpdateCategoryInput) =>
+        fetchApi<Category>(`/api/admin/categories/${id}`, {
+          method: 'PUT',
+          body: JSON.stringify(data)
+        }),
+      
+      delete: (id: string) =>
+        fetchApi<{ message: string; orphanedTransactions: number }>(`/api/admin/categories/${id}`, {
+          method: 'DELETE'
+        })
+    }
   }
 };

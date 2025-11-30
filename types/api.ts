@@ -101,3 +101,43 @@ export interface UserProfile {
   authProvider: string;
   createdAt: string;
 }
+
+// Admin Types
+export interface AdminUser {
+  id: string;
+  email: string;
+  fullName: string | null;
+  role: 'CLIENT' | 'ADMIN';
+  authProvider: string;
+  createdAt: string;
+  _count?: {
+    transactions: number;
+  };
+}
+
+export interface AdminUserListParams {
+  search?: string;
+  role?: 'CLIENT' | 'ADMIN';
+  page?: number;
+  limit?: number;
+}
+
+export interface CreateAdminInput {
+  email: string;
+  password: string;
+  fullName: string;
+}
+
+export interface CreateCategoryInput {
+  name: string;
+  type: 'EXPENSE' | 'INCOME';
+  iconSlug?: string;
+  colorHex?: string;
+}
+
+export interface UpdateCategoryInput {
+  name?: string;
+  type?: 'EXPENSE' | 'INCOME';
+  iconSlug?: string;
+  colorHex?: string;
+}
