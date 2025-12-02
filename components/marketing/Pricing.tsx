@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { Button } from '../ui/button';
 import { CheckCircle, XCircle } from 'lucide-react';
 import { formatPrice } from '../../lib/utils';
@@ -95,9 +96,11 @@ export const Pricing: React.FC = () => {
                 <span>Support Prioritas (Kalau kami bangun)</span>
               </li>
             </ul>
-            <Button variant="primary" className="w-full">
-              Beli Sekarang
-            </Button>
+            <Link to="/donasi" className="block w-full">
+              <Button variant="primary" className="w-full">
+                Donasi Owner ❤️
+              </Button>
+            </Link>
           </motion.div>
         </div>
       </div>
