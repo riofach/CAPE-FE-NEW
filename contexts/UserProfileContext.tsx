@@ -6,6 +6,7 @@ import type { UserProfile } from '../types/api';
 interface UserProfileContextType {
   profile: UserProfile | null;
   isLoading: boolean;
+  isAdmin: boolean;
   refreshProfile: () => Promise<void>;
   updateProfile: (data: { fullName?: string }) => Promise<boolean>;
 }
@@ -64,8 +65,11 @@ export const UserProfileProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, [user, fetchProfile]);
 
+  // Computed property for admin check
+  const isAdmin = profile?.role === 'ADMIN';
+
   return (
-    <UserProfileContext.Provider value={{ profile, isLoading, refreshProfile, updateProfile }}>
+    <UserProfileContext.Provider value={{ profile, isLoading, isAdmin, refreshProfile, updateProfile }}>
       {children}
     </UserProfileContext.Provider>
   );

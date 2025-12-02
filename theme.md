@@ -24,8 +24,21 @@ Icons: Lucide React (Stroke width: 1.5px).
 VISUAL DNA (Mode: 🎲 RNG SURPRISE)
 Style: Soft Claymorphism
 Theme Mode: Use the native lighting scheme of the selected Visual Style.
-Palette: Pastel Blue/Pink + White + Soft Shadows.
-Style Rules: Design with 'Soft Claymorphism'. Use double inner-shadows to create depth and an 'inflated' look. Corners should be Extra Large (rounded-3xl). Use pastel colors (Blue, Pink, Mint). Typography should be rounded and friendly (Nunito or Quicksand). Buttons should look like physical, squishy objects.
+Palette: Pastel Emerald/Lime/Teal + White + Soft Shadows.
+Color Tokens (from index.css):
+  - Background: #f0f4f8 (clay-bg)
+  - Primary Green: #d1fae5 (clay-green / emerald-100)
+  - Secondary Lime: #ecfccb (clay-lime / lime-100)
+  - Text: #475569 (clay-text / slate-600)
+  - White: #ffffff
+Semantic Colors:
+  - Primary Accent: emerald-500, emerald-600
+  - Secondary Accent: lime-400, lime-500, teal-500
+  - Income: emerald-600 (green)
+  - Expense: rose-600 (red/pink)
+  - Success States: emerald-50, emerald-100
+  - Error States: rose-50, rose-100
+Style Rules: Design with 'Soft Claymorphism'. Use double inner-shadows to create depth and an 'inflated' look. Corners should be Extra Large (rounded-3xl). Use pastel colors (Emerald, Lime, Teal). Typography should be rounded and friendly (Nunito or Quicksand). Buttons should look like physical, squishy objects.
 LAYOUT & CONTENT ARCHITECTURE (CUSTOM BUILDER)
 The layout is assembled from the following modular variants based on user selection:
 
