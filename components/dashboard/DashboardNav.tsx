@@ -5,11 +5,13 @@ import { motion } from 'framer-motion';
 import { useAuth } from '../../contexts/AuthContext';
 import { useUserProfile } from '../../contexts/UserProfileContext';
 import { cn } from '../../lib/utils';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
 
 export const DashboardNav: React.FC = () => {
   const { user, signOut } = useAuth();
   const { profile } = useUserProfile();
   const navigate = useNavigate();
+  const reducedMotion = useReducedMotion();
 
   const handleSignOut = async () => {
     await signOut();
@@ -21,8 +23,11 @@ export const DashboardNav: React.FC = () => {
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       className={cn(
-        "sticky top-0 z-50 backdrop-blur-md",
-        "bg-white/70 border-b border-white/40",
+        "sticky top-0 z-50",
+        reducedMotion
+          ? "bg-white/95"
+          : "backdrop-blur-md bg-white/70",
+        "border-b border-white/40",
         "shadow-[0_4px_30px_rgba(0,0,0,0.05)]"
       )}
     >
@@ -106,14 +111,16 @@ export const DashboardNav: React.FC = () => {
             </div>
 
             <motion.button
-              whileHover={{ scale: 1.05 }}
+              whileHover={reducedMotion ? {} : { scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={handleSignOut}
               className={cn(
                 "flex items-center gap-2 px-4 py-2 rounded-xl",
                 "bg-slate-100 hover:bg-slate-200 text-slate-600",
                 "transition-colors duration-200",
-                "shadow-[inset_2px_2px_4px_#ffffff,inset_-2px_-2px_4px_#d1d5db]"
+                reducedMotion
+                  ? "shadow-sm"
+                  : "shadow-[inset_2px_2px_4px_#ffffff,inset_-2px_-2px_4px_#d1d5db]"
               )}
             >
               <LogOut className="w-4 h-4" strokeWidth={1.5} />

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, Send, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 import { cn } from '../../lib/utils';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
 
 interface AISmartInputProps {
   onSubmit: (input: string) => Promise<void>;
@@ -14,6 +15,7 @@ export const AISmartInput: React.FC<AISmartInputProps> = ({
   onManualEntry,
   isLoading
 }) => {
+  const reducedMotion = useReducedMotion();
   const [input, setInput] = useState('');
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
@@ -53,7 +55,9 @@ export const AISmartInput: React.FC<AISmartInputProps> = ({
       className={cn(
         "rounded-3xl p-6",
         "bg-gradient-to-br from-violet-50 to-purple-50",
-        "shadow-[20px_20px_60px_#c8d0e7,-20px_-20px_60px_#ffffff]",
+        reducedMotion
+          ? "shadow-lg"
+          : "shadow-[20px_20px_60px_#c8d0e7,-20px_-20px_60px_#ffffff]",
         "border border-white/60"
       )}
     >
@@ -98,7 +102,7 @@ export const AISmartInput: React.FC<AISmartInputProps> = ({
           <motion.button
             type="submit"
             disabled={!input.trim() || isLoading}
-            whileHover={{ scale: 1.05 }}
+            whileHover={reducedMotion ? {} : { scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className={cn(
               "absolute right-2 top-1/2 -translate-y-1/2",
