@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Send, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
+import { Sparkles, Send, Loader2, CheckCircle, AlertCircle, ShieldOff } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 
@@ -8,12 +8,21 @@ interface AISmartInputProps {
   onSubmit: (input: string) => Promise<void>;
   onManualEntry: () => void;
   isLoading?: boolean;
+  disabled?: boolean;
+  disabledMessage?: string;
+  usageStats?: {
+    used: number;
+    limit: number;
+  };
 }
 
 export const AISmartInput: React.FC<AISmartInputProps> = ({
   onSubmit,
   onManualEntry,
-  isLoading
+  isLoading,
+  disabled = false,
+  disabledMessage,
+  usageStats
 }) => {
   const reducedMotion = useReducedMotion();
   const [input, setInput] = useState('');
@@ -22,7 +31,7 @@ export const AISmartInput: React.FC<AISmartInputProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim() || isLoading) return;
+    if (!input.trim() || isLoading || disabled) return;
 
     try {
       setStatus('idle');
@@ -62,19 +71,63 @@ export const AISmartInput: React.FC<AISmartInputProps> = ({
       )}
     >
       {/* Header */}
-      <div className="flex items-center gap-3 mb-4">
-        <div className={cn(
-          "w-10 h-10 rounded-xl flex items-center justify-center",
-          "bg-gradient-to-br from-violet-500 to-purple-600",
-          "shadow-[inset_2px_2px_4px_rgba(255,255,255,0.3)]"
-        )}>
-          <Sparkles className="w-5 h-5 text-white" strokeWidth={1.5} />
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-3">
+          <div className={cn(
+            "w-10 h-10 rounded-xl flex items-center justify-center",
+            disabled
+              ? "bg-slate-300"
+              : "bg-gradient-to-br from-violet-500 to-purple-600",
+            "shadow-[inset_2px_2px_4px_rgba(255,255,255,0.3)]"
+          )}>
+            {disabled ? (
+              <ShieldOff className="w-5 h-5 text-slate-500" strokeWidth={1.5} />
+            ) : (
+              <Sparkles className="w-5 h-5 text-white" strokeWidth={1.5} />
+            )}
+          </div>
+          <div>
+            <h3 className={cn("font-bold", disabled ? "text-slate-500" : "text-slate-800")}>
+              AI Smart Input
+            </h3>
+            <p className="text-sm text-slate-500">
+              {disabled ? 'Fitur AI tidak tersedia' : 'Ketik natural, AI parsing otomatis ✨'}
+            </p>
+          </div>
         </div>
-        <div>
-          <h3 className="font-bold text-slate-800">AI Smart Input</h3>
-          <p className="text-sm text-slate-500">Ketik natural, AI parsing otomatis ✨</p>
-        </div>
+        
+        {/* Usage Stats */}
+        {usageStats && !disabled && (
+          <div className={cn(
+            "text-xs px-3 py-1.5 rounded-full",
+            "bg-white/60",
+            "shadow-[inset_1px_1px_2px_#ffffff,inset_-1px_-1px_2px_#e9d5ff]",
+            usageStats.used >= usageStats.limit 
+              ? "text-rose-600" 
+              : "text-slate-600"
+          )}>
+            <span className="font-semibold">{usageStats.used}</span>
+            <span className="text-slate-400">/{usageStats.limit}</span>
+            <span className="ml-1 text-slate-400">hari ini</span>
+          </div>
+        )}
       </div>
+
+      {/* Disabled Overlay */}
+      {disabled && (
+        <div className={cn(
+          "mb-4 p-4 rounded-2xl",
+          "bg-slate-100/80 border border-slate-200",
+          "flex items-center gap-3"
+        )}>
+          <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center shrink-0">
+            <ShieldOff className="w-4 h-4 text-slate-500" strokeWidth={1.5} />
+          </div>
+          <p className="text-sm text-slate-600">
+            {disabledMessage || 'Fitur AI dinonaktifkan untuk akun Anda. Hubungi admin untuk mengaktifkan.'}
+          </p>
+        </div>
+      )}
 
       {/* Input Form */}
       <form onSubmit={handleSubmit}>
@@ -89,26 +142,27 @@ export const AISmartInput: React.FC<AISmartInputProps> = ({
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder={randomPlaceholder}
-            disabled={isLoading}
+            placeholder={disabled ? 'Fitur AI tidak tersedia...' : randomPlaceholder}
+            disabled={isLoading || disabled}
             className={cn(
               "w-full px-5 py-4 pr-14",
               "bg-transparent text-slate-800 placeholder:text-slate-400",
               "focus:outline-none",
-              "disabled:opacity-50"
+              "disabled:opacity-50 disabled:cursor-not-allowed"
             )}
           />
           
           <motion.button
             type="submit"
-            disabled={!input.trim() || isLoading}
-            whileHover={reducedMotion ? {} : { scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            disabled={!input.trim() || isLoading || disabled}
+            whileHover={reducedMotion || disabled ? {} : { scale: 1.05 }}
+            whileTap={disabled ? {} : { scale: 0.95 }}
             className={cn(
               "absolute right-2 top-1/2 -translate-y-1/2",
               "w-10 h-10 rounded-xl flex items-center justify-center",
-              "bg-gradient-to-br from-violet-500 to-purple-600",
-              "text-white shadow-lg",
+              disabled 
+                ? "bg-slate-300 text-slate-500"
+                : "bg-gradient-to-br from-violet-500 to-purple-600 text-white shadow-lg",
               "disabled:opacity-50 disabled:cursor-not-allowed",
               "transition-all duration-200"
             )}
