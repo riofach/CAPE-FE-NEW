@@ -11,7 +11,7 @@ import { TransactionDetailDialog } from '../components/dashboard/TransactionDeta
 import { ClayConfirmDialog } from '../components/ui/clay-confirm-dialog';
 import { api } from '../lib/api';
 import { useToast } from '../contexts/ToastContext';
-import type { Transaction, Category, TransactionStats } from '../types/api';
+import type { Transaction, Category, TransactionStats, AiUsageStats } from '../types/api';
 
 export const Dashboard: React.FC = () => {
   const toast = useToast();
@@ -35,6 +35,9 @@ export const Dashboard: React.FC = () => {
   const [showManualEntry, setShowManualEntry] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<Transaction | null>(null);
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
+  const [aiDisabled, setAiDisabled] = useState(false);
+  const [aiDisabledMessage, setAiDisabledMessage] = useState<string | undefined>();
+  const [aiUsageStats, setAiUsageStats] = useState<AiUsageStats | null>(null);
 
   const fetchStats = useCallback(async () => {
     setIsLoadingStats(true);
@@ -75,6 +78,20 @@ export const Dashboard: React.FC = () => {
     }
   }, []);
 
+  const fetchAiUsage = useCallback(async () => {
+    try {
+      const response = await api.users.getAiUsage();
+      if (response.data) {
+        setAiUsageStats(response.data);
+        if (!response.data.aiEnabled) {
+          setAiDisabled(true);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to fetch AI usage:', error);
+    }
+  }, []);
+
   useEffect(() => {
     fetchStats();
     fetchTransactions();
@@ -82,7 +99,8 @@ export const Dashboard: React.FC = () => {
 
   useEffect(() => {
     fetchCategories();
-  }, [fetchCategories]);
+    fetchAiUsage();
+  }, [fetchCategories, fetchAiUsage]);
 
   const handlePrevMonth = () => {
     const [year, month] = currentMonth.split('-').map(Number);
@@ -103,10 +121,18 @@ export const Dashboard: React.FC = () => {
     setIsAiProcessing(true);
     try {
       await api.transactions.parseWithAi(input);
-      await Promise.all([fetchStats(), fetchTransactions()]);
+      await Promise.all([fetchStats(), fetchTransactions(), fetchAiUsage()]);
       toast.success('Transaksi berhasil disimpan! 💰');
     } catch (error: any) {
+      // Check if AI access is disabled or limit exceeded
+      if (error.message?.includes('AI dinonaktifkan') || error.message?.includes('AI_ACCESS_DISABLED')) {
+        setAiDisabled(true);
+        setAiDisabledMessage(error.message);
+      }
+      // Refresh usage stats on any error (including rate limit)
+      fetchAiUsage();
       toast.error(error.message || 'Gagal memproses input AI 😵');
+      throw error; // Re-throw so AISmartInput shows error state
     } finally {
       setIsAiProcessing(false);
     }
@@ -186,6 +212,9 @@ export const Dashboard: React.FC = () => {
           onSubmit={handleAiSubmit}
           onManualEntry={() => setShowManualEntry(true)}
           isLoading={isAiProcessing}
+          disabled={aiDisabled}
+          disabledMessage={aiDisabledMessage}
+          usageStats={aiUsageStats ? { used: aiUsageStats.used, limit: aiUsageStats.limit } : undefined}
         />
 
         {/* Stats Card */}

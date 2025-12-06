@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { RefreshCw } from 'lucide-react';
+import { RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react';
 import { DashboardLayout } from '../components/dashboard/DashboardLayout';
 import { TransactionFilters } from '../components/dashboard/TransactionFilters';
 import { TransactionList } from '../components/dashboard/TransactionList';
@@ -11,18 +11,20 @@ import { ClayConfirmDialog } from '../components/ui/clay-confirm-dialog';
 import { api } from '../lib/api';
 import { cn } from '../lib/utils';
 import { useToast } from '../contexts/ToastContext';
+import { useReducedMotion } from '../hooks/useReducedMotion';
 import type { Transaction, Category, TransactionListParams } from '../types/api';
 
-const ITEMS_PER_PAGE = 20;
+const ITEMS_PER_PAGE = 10;
 
 export const Transactions: React.FC = () => {
   const toast = useToast();
   const location = useLocation();
+  const reducedMotion = useReducedMotion();
   
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [total, setTotal] = useState(0);
-  const [offset, setOffset] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
   
   const [filters, setFilters] = useState<TransactionListParams>({
     sortBy: 'date',
@@ -32,7 +34,6 @@ export const Transactions: React.FC = () => {
   });
   
   const [isLoading, setIsLoading] = useState(true);
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
   
@@ -40,28 +41,21 @@ export const Transactions: React.FC = () => {
   const [deleteTarget, setDeleteTarget] = useState<Transaction | null>(null);
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
 
-  const fetchTransactions = useCallback(async (append = false) => {
-    if (append) {
-      setIsLoadingMore(true);
-    } else {
-      setIsLoading(true);
-    }
+  const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
+
+  const fetchTransactions = useCallback(async (page: number) => {
+    setIsLoading(true);
 
     try {
-      const currentOffset = append ? offset + ITEMS_PER_PAGE : 0;
+      const offset = (page - 1) * ITEMS_PER_PAGE;
       const response = await api.transactions.list({
         ...filters,
         limit: ITEMS_PER_PAGE,
-        offset: currentOffset
+        offset
       });
 
       if (response.data) {
-        if (append) {
-          setTransactions(prev => [...prev, ...response.data!]);
-        } else {
-          setTransactions(response.data);
-        }
-        setOffset(currentOffset);
+        setTransactions(response.data);
       }
       
       if (response.pagination) {
@@ -71,9 +65,8 @@ export const Transactions: React.FC = () => {
       console.error('Failed to fetch transactions:', error);
     } finally {
       setIsLoading(false);
-      setIsLoadingMore(false);
     }
-  }, [filters, offset]);
+  }, [filters]);
 
   const fetchCategories = useCallback(async () => {
     try {
@@ -91,9 +84,13 @@ export const Transactions: React.FC = () => {
   }, [fetchCategories]);
 
   useEffect(() => {
-    setOffset(0);
-    fetchTransactions(false);
+    setCurrentPage(1);
+    fetchTransactions(1);
   }, [filters]);
+
+  useEffect(() => {
+    fetchTransactions(currentPage);
+  }, [currentPage]);
 
   // Handle navigation from Dashboard with edit intent
   useEffect(() => {
@@ -112,8 +109,11 @@ export const Transactions: React.FC = () => {
     setFilters(prev => ({ ...prev, ...newFilters }));
   };
 
-  const handleLoadMore = () => {
-    fetchTransactions(true);
+  const handlePageChange = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   const handleDelete = async (id: string) => {
@@ -165,8 +165,27 @@ export const Transactions: React.FC = () => {
     setDeleteTarget(null);
   };
 
-  const hasMore = transactions.length < total;
-  const remaining = total - transactions.length;
+  // Generate page numbers to display
+  const getPageNumbers = () => {
+    const pages: (number | 'ellipsis')[] = [];
+    const maxVisible = 5;
+    
+    if (totalPages <= maxVisible) {
+      for (let i = 1; i <= totalPages; i++) pages.push(i);
+    } else {
+      if (currentPage <= 3) {
+        pages.push(1, 2, 3, 4, 'ellipsis', totalPages);
+      } else if (currentPage >= totalPages - 2) {
+        pages.push(1, 'ellipsis', totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
+      } else {
+        pages.push(1, 'ellipsis', currentPage - 1, currentPage, currentPage + 1, 'ellipsis', totalPages);
+      }
+    }
+    return pages;
+  };
+
+  const startItem = (currentPage - 1) * ITEMS_PER_PAGE + 1;
+  const endItem = Math.min(currentPage * ITEMS_PER_PAGE, total);
 
   return (
     <DashboardLayout>
@@ -198,10 +217,13 @@ export const Transactions: React.FC = () => {
           className="flex items-center justify-between text-sm text-slate-500"
         >
           <span>
-            Menampilkan {transactions.length} dari {total} transaksi
+            {total > 0 
+              ? `Menampilkan ${startItem}-${endItem} dari ${total} transaksi`
+              : 'Tidak ada transaksi'
+            }
           </span>
           <button
-            onClick={() => fetchTransactions(false)}
+            onClick={() => fetchTransactions(currentPage)}
             disabled={isLoading}
             className="flex items-center gap-1 text-emerald-600 hover:text-emerald-700 transition-colors"
           >
@@ -218,42 +240,108 @@ export const Transactions: React.FC = () => {
           highlightId={deletingId}
         />
 
-        {/* Load More Button */}
-        {hasMore && !isLoading && (
+        {/* Pagination */}
+        {totalPages > 1 && !isLoading && (
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col items-center gap-2 pt-4"
+            className={cn(
+              "flex items-center justify-center gap-2 pt-4",
+              "flex-wrap"
+            )}
           >
+            {/* Previous Button */}
             <motion.button
-              whileHover={{ scale: 1.02, y: -2 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={handleLoadMore}
-              disabled={isLoadingMore}
+              whileHover={reducedMotion ? {} : { scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
               className={cn(
-                "px-8 py-3 rounded-2xl font-bold",
+                "w-10 h-10 rounded-xl flex items-center justify-center",
                 "bg-white/80",
-                "shadow-[6px_6px_16px_#c8d0e7,-6px_-6px_16px_#ffffff]",
-                "hover:shadow-[8px_8px_20px_#c8d0e7,-8px_-8px_20px_#ffffff]",
-                "text-emerald-600",
-                "flex items-center gap-2",
-                "transition-all duration-300",
-                isLoadingMore && "opacity-70"
+                reducedMotion
+                  ? "shadow-md"
+                  : "shadow-[inset_2px_2px_4px_#ffffff,inset_-2px_-2px_4px_#d1d5db]",
+                "text-slate-600 hover:text-emerald-600",
+                "transition-all duration-200",
+                currentPage === 1 && "opacity-40 cursor-not-allowed"
               )}
             >
-              {isLoadingMore ? (
-                <>
-                  <RefreshCw className="w-5 h-5 animate-spin" strokeWidth={1.5} />
-                  Memuat...
-                </>
-              ) : (
-                '🔄 Muat Lebih Banyak'
-              )}
+              <ChevronLeft className="w-5 h-5" strokeWidth={1.5} />
             </motion.button>
-            <span className="text-sm text-slate-400">
-              Sisa {remaining} transaksi
-            </span>
+
+            {/* Page Numbers */}
+            <div className="flex items-center gap-1">
+              {getPageNumbers().map((page, index) => (
+                page === 'ellipsis' ? (
+                  <span 
+                    key={`ellipsis-${index}`} 
+                    className="w-10 h-10 flex items-center justify-center text-slate-400"
+                  >
+                    ...
+                  </span>
+                ) : (
+                  <motion.button
+                    key={page}
+                    whileHover={reducedMotion ? {} : { scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => handlePageChange(page)}
+                    className={cn(
+                      "w-10 h-10 rounded-xl flex items-center justify-center",
+                      "font-medium text-sm",
+                      "transition-all duration-200",
+                      currentPage === page
+                        ? cn(
+                            "bg-emerald-500 text-white",
+                            reducedMotion
+                              ? "shadow-md"
+                              : "shadow-[4px_4px_12px_rgba(16,185,129,0.3)]"
+                          )
+                        : cn(
+                            "bg-white/80 text-slate-600 hover:text-emerald-600",
+                            reducedMotion
+                              ? "shadow-md hover:shadow-lg"
+                              : "shadow-[inset_2px_2px_4px_#ffffff,inset_-2px_-2px_4px_#d1d5db] hover:shadow-[inset_3px_3px_6px_#ffffff,inset_-3px_-3px_6px_#d1d5db]"
+                          )
+                    )}
+                  >
+                    {page}
+                  </motion.button>
+                )
+              ))}
+            </div>
+
+            {/* Next Button */}
+            <motion.button
+              whileHover={reducedMotion ? {} : { scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className={cn(
+                "w-10 h-10 rounded-xl flex items-center justify-center",
+                "bg-white/80",
+                reducedMotion
+                  ? "shadow-md"
+                  : "shadow-[inset_2px_2px_4px_#ffffff,inset_-2px_-2px_4px_#d1d5db]",
+                "text-slate-600 hover:text-emerald-600",
+                "transition-all duration-200",
+                currentPage === totalPages && "opacity-40 cursor-not-allowed"
+              )}
+            >
+              <ChevronRight className="w-5 h-5" strokeWidth={1.5} />
+            </motion.button>
           </motion.div>
+        )}
+
+        {/* Page Info */}
+        {totalPages > 1 && !isLoading && (
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-center text-sm text-slate-400"
+          >
+            Halaman {currentPage} dari {totalPages}
+          </motion.p>
         )}
       </div>
 

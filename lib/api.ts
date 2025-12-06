@@ -10,6 +10,7 @@ import type {
   InsightResponse,
   TransactionListParams,
   UserProfile,
+  AiUsageStats,
   AdminUser,
   AdminUserListParams,
   CreateAdminInput,
@@ -123,7 +124,9 @@ export const api = {
       fetchApi<UserProfile>('/api/users/profile', {
         method: 'PUT',
         body: JSON.stringify(data)
-      })
+      }),
+    
+    getAiUsage: () => fetchApi<AiUsageStats>('/api/users/ai-usage')
   },
 
   admin: {
@@ -148,6 +151,12 @@ export const api = {
       delete: (id: string) => 
         fetchApi<{ message: string }>(`/api/admin/users/${id}`, {
           method: 'DELETE'
+        }),
+      
+      toggleAiAccess: (id: string, enabled: boolean) =>
+        fetchApi<AdminUser & { message: string }>(`/api/admin/users/${id}/ai-access`, {
+          method: 'PATCH',
+          body: JSON.stringify({ enabled })
         })
     },
     
