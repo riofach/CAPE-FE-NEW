@@ -8,6 +8,7 @@ import { AdminRoute } from './components/auth/AdminRoute';
 
 // Lazy load pages for code splitting
 const Landing = lazy(() => import('./pages/Landing').then(m => ({ default: m.Landing })));
+const Donasi = lazy(() => import('./pages/Donasi').then(m => ({ default: m.Donasi })));
 const Login = lazy(() => import('./pages/Login').then(m => ({ default: m.Login })));
 const Register = lazy(() => import('./pages/Register').then(m => ({ default: m.Register })));
 const AuthCallback = lazy(() => import('./pages/AuthCallback').then(m => ({ default: m.AuthCallback })));
@@ -36,6 +37,7 @@ function App() {
             <Suspense fallback={<PageLoader />}>
               <Routes>
             <Route path="/" element={<Landing />} />
+            <Route path="/donasi" element={<Donasi />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/auth/callback" element={<AuthCallback />} />

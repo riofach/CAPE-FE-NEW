@@ -2,6 +2,8 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, Calendar, AlertCircle } from 'lucide-react';
 import { cn, formatPrice } from '../../lib/utils';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
+import { getStaggerDelay, getShadowClass } from '../../lib/motion';
 import { CategoryIcon } from '../ui/dynamic-icon';
 import type { Transaction } from '../../types/api';
 
@@ -18,6 +20,8 @@ export const TransactionList: React.FC<TransactionListProps> = ({
   isLoading,
   highlightId
 }) => {
+  const reducedMotion = useReducedMotion();
+
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
     return date.toLocaleDateString('id-ID', { 
@@ -75,21 +79,23 @@ export const TransactionList: React.FC<TransactionListProps> = ({
 
   return (
     <div className="space-y-3">
-      <AnimatePresence mode="popLayout">
+      <AnimatePresence mode={reducedMotion ? 'wait' : 'popLayout'}>
         {transactions.map((transaction, index) => (
           <motion.div
             key={transaction.id}
-            layout
+            layout={!reducedMotion}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, x: -100 }}
-            transition={{ delay: index * 0.05 }}
+            transition={getStaggerDelay(index, reducedMotion)}
             onClick={() => onCardClick(transaction)}
             className={cn(
               "p-4 rounded-2xl cursor-pointer",
-              "bg-white/60 backdrop-blur-sm",
+              getShadowClass('backdrop', reducedMotion),
               "shadow-[inset_4px_4px_8px_#ffffff,inset_-2px_-2px_6px_#d1d5db]",
-              "hover:shadow-[inset_6px_6px_12px_#ffffff,inset_-3px_-3px_8px_#d1d5db]",
+              reducedMotion 
+                ? "hover:shadow-lg" 
+                : "hover:shadow-[inset_6px_6px_12px_#ffffff,inset_-3px_-3px_8px_#d1d5db]",
               "active:scale-[0.99]",
               "transition-all duration-300",
               highlightId === transaction.id && "opacity-50"

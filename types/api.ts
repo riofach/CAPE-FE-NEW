@@ -103,6 +103,13 @@ export interface UserProfile {
   createdAt: string;
 }
 
+export interface AiUsageStats {
+  used: number;
+  limit: number;
+  remaining: number;
+  aiEnabled: boolean;
+}
+
 // Admin Types
 export interface AdminUser {
   id: string;
@@ -110,6 +117,7 @@ export interface AdminUser {
   fullName: string | null;
   role: 'CLIENT' | 'ADMIN';
   authProvider: string;
+  aiEnabled: boolean;
   createdAt: string;
   _count?: {
     transactions: number;

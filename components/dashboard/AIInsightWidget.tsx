@@ -2,12 +2,15 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, RefreshCw, Loader2, Flame } from 'lucide-react';
 import { cn } from '../../lib/utils';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
+import { getShadowClass } from '../../lib/motion';
 
 interface AIInsightWidgetProps {
   onGenerate: () => Promise<string>;
 }
 
 export const AIInsightWidget: React.FC<AIInsightWidgetProps> = ({ onGenerate }) => {
+  const reducedMotion = useReducedMotion();
   const [insight, setInsight] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -32,7 +35,9 @@ export const AIInsightWidget: React.FC<AIInsightWidgetProps> = ({ onGenerate }) 
       className={cn(
         "rounded-3xl p-6",
         "bg-gradient-to-br from-violet-50 via-purple-50 to-fuchsia-50",
-        "shadow-[20px_20px_60px_#c8d0e7,-20px_-20px_60px_#ffffff]",
+        reducedMotion
+          ? "shadow-lg"
+          : "shadow-[20px_20px_60px_#c8d0e7,-20px_-20px_60px_#ffffff]",
         "border border-white/60"
       )}
     >
@@ -40,12 +45,14 @@ export const AIInsightWidget: React.FC<AIInsightWidgetProps> = ({ onGenerate }) 
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-3">
           <motion.div 
-            whileHover={{ rotate: [0, -10, 10, 0] }}
+            whileHover={reducedMotion ? {} : { rotate: [0, -10, 10, 0] }}
             transition={{ duration: 0.5 }}
             className={cn(
               "w-12 h-12 rounded-2xl flex items-center justify-center",
               "bg-gradient-to-br from-violet-500 to-purple-600",
-              "shadow-[inset_3px_3px_6px_rgba(255,255,255,0.3),4px_4px_12px_rgba(139,92,246,0.3)]"
+              reducedMotion
+                ? "shadow-lg"
+                : "shadow-[inset_3px_3px_6px_rgba(255,255,255,0.3),4px_4px_12px_rgba(139,92,246,0.3)]"
             )}
           >
             <Sparkles className="w-6 h-6 text-white" strokeWidth={1.5} />
@@ -60,14 +67,16 @@ export const AIInsightWidget: React.FC<AIInsightWidgetProps> = ({ onGenerate }) 
         
         {insight && (
           <motion.button
-            whileHover={{ scale: 1.1, rotate: 180 }}
+            whileHover={reducedMotion ? {} : { scale: 1.1, rotate: 180 }}
             whileTap={{ scale: 0.9 }}
             onClick={handleGenerate}
             disabled={loading}
             className={cn(
               "w-10 h-10 rounded-xl flex items-center justify-center",
               "bg-white/80 hover:bg-white text-violet-600",
-              "shadow-[inset_2px_2px_4px_#ffffff,inset_-2px_-2px_4px_#e9d5ff]",
+              reducedMotion
+                ? "shadow-sm"
+                : "shadow-[inset_2px_2px_4px_#ffffff,inset_-2px_-2px_4px_#e9d5ff]",
               "transition-all duration-300"
             )}
           >
@@ -90,15 +99,16 @@ export const AIInsightWidget: React.FC<AIInsightWidgetProps> = ({ onGenerate }) 
               Penasaran gimana AI melihat kebiasaan spending-mu? 👀
             </p>
             <motion.button
-              whileHover={{ scale: 1.03, y: -2 }}
+              whileHover={reducedMotion ? {} : { scale: 1.03, y: -2 }}
               whileTap={{ scale: 0.97 }}
               onClick={handleGenerate}
               className={cn(
                 "px-8 py-4 rounded-2xl font-bold text-lg",
                 "bg-gradient-to-r from-violet-500 via-purple-500 to-fuchsia-500",
                 "text-white",
-                "shadow-[inset_3px_3px_6px_rgba(255,255,255,0.3),6px_6px_20px_rgba(139,92,246,0.4)]",
-                "hover:shadow-[inset_3px_3px_6px_rgba(255,255,255,0.3),8px_8px_25px_rgba(139,92,246,0.5)]",
+                reducedMotion
+                  ? "shadow-lg hover:shadow-xl"
+                  : "shadow-[inset_3px_3px_6px_rgba(255,255,255,0.3),6px_6px_20px_rgba(139,92,246,0.4)] hover:shadow-[inset_3px_3px_6px_rgba(255,255,255,0.3),8px_8px_25px_rgba(139,92,246,0.5)]",
                 "transition-all duration-300"
               )}
             >
@@ -157,8 +167,10 @@ export const AIInsightWidget: React.FC<AIInsightWidgetProps> = ({ onGenerate }) 
             transition={{ duration: 0.4 }}
             className={cn(
               "p-5 rounded-2xl",
-              "bg-white/80 backdrop-blur-sm",
-              "shadow-[inset_4px_4px_8px_#ffffff,inset_-4px_-4px_8px_#f3e8ff]",
+              getShadowClass('backdrop', reducedMotion),
+              reducedMotion
+                ? "shadow-md"
+                : "shadow-[inset_4px_4px_8px_#ffffff,inset_-4px_-4px_8px_#f3e8ff]",
               "border border-violet-100/50"
             )}
           >

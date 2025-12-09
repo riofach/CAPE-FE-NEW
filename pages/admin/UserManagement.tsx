@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Users, Plus, Search, Trash2, RefreshCw, Shield, User } from 'lucide-react';
+import { Users, Plus, Search, Trash2, RefreshCw, Shield, User, Sparkles } from 'lucide-react';
 import { AdminLayout } from '../../components/admin/AdminLayout';
 import { ClayCard } from '../../components/ui/clay-card';
 import { Button } from '../../components/ui/button';
@@ -25,6 +25,7 @@ export const UserManagement: React.FC = () => {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<AdminUser | null>(null);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [togglingAiId, setTogglingAiId] = useState<string | null>(null);
 
   // Debounce search
   useEffect(() => {
@@ -84,6 +85,22 @@ export const UserManagement: React.FC = () => {
     setTotal(prev => prev + 1);
     setShowCreateDialog(false);
     toast.success('Admin baru berhasil dibuat! 🛡️');
+  };
+
+  const handleToggleAiAccess = async (user: AdminUser) => {
+    setTogglingAiId(user.id);
+    try {
+      const newEnabled = !user.aiEnabled;
+      await api.admin.users.toggleAiAccess(user.id, newEnabled);
+      setUsers(prev => prev.map(u => 
+        u.id === user.id ? { ...u, aiEnabled: newEnabled } : u
+      ));
+      toast.success(`AI ${newEnabled ? 'diaktifkan' : 'dinonaktifkan'} untuk ${user.fullName || user.email}`);
+    } catch (error: any) {
+      toast.error(error.message || 'Gagal mengubah akses AI');
+    } finally {
+      setTogglingAiId(null);
+    }
   };
 
   const formatDate = (dateStr: string) => {
@@ -215,6 +232,15 @@ export const UserManagement: React.FC = () => {
                           )}>
                             {user.role}
                           </span>
+                          <span className={cn(
+                            "text-xs px-2 py-0.5 rounded-full font-medium flex items-center gap-1",
+                            user.aiEnabled
+                              ? "bg-amber-100 text-amber-700"
+                              : "bg-slate-100 text-slate-500"
+                          )}>
+                            <Sparkles className="w-3 h-3" strokeWidth={1.5} />
+                            AI {user.aiEnabled ? 'ON' : 'OFF'}
+                          </span>
                           <span className="text-xs text-slate-400">
                             {user.authProvider}
                           </span>
@@ -230,15 +256,34 @@ export const UserManagement: React.FC = () => {
                       </div>
                     </div>
                     {currentUser?.id !== user.id ? (
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        onClick={() => setDeleteTarget(user)}
-                        disabled={deletingId === user.id}
-                        className="shrink-0 !text-rose-600 hover:!bg-rose-50"
-                      >
-                        <Trash2 className="w-4 h-4" strokeWidth={1.5} />
-                      </Button>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          onClick={() => handleToggleAiAccess(user)}
+                          disabled={togglingAiId === user.id}
+                          className={cn(
+                            user.aiEnabled 
+                              ? "!text-amber-600 hover:!bg-amber-50" 
+                              : "!text-slate-400 hover:!bg-slate-100"
+                          )}
+                          title={user.aiEnabled ? 'Nonaktifkan AI' : 'Aktifkan AI'}
+                        >
+                          <Sparkles className={cn(
+                            "w-4 h-4",
+                            togglingAiId === user.id && "animate-pulse"
+                          )} strokeWidth={1.5} />
+                        </Button>
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          onClick={() => setDeleteTarget(user)}
+                          disabled={deletingId === user.id}
+                          className="!text-rose-600 hover:!bg-rose-50"
+                        >
+                          <Trash2 className="w-4 h-4" strokeWidth={1.5} />
+                        </Button>
+                      </div>
                     ) : (
                       <span className="text-xs text-slate-400 italic px-2">Akun Anda</span>
                     )}

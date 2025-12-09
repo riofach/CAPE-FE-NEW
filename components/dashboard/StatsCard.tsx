@@ -2,6 +2,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { TrendingDown, TrendingUp, Wallet, ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn, formatPrice } from '../../lib/utils';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
+import { getShadowClass } from '../../lib/motion';
 
 interface StatsCardProps {
   month: string;
@@ -20,6 +22,7 @@ export const StatsCard: React.FC<StatsCardProps> = ({
   onNextMonth,
   isLoading
 }) => {
+  const reducedMotion = useReducedMotion();
   const balance = totalIncome - totalExpense;
   const isPositive = balance >= 0;
 
@@ -49,13 +52,15 @@ export const StatsCard: React.FC<StatsCardProps> = ({
       {/* Month Navigation */}
       <div className="flex items-center justify-between mb-6">
         <motion.button
-          whileHover={{ scale: 1.1 }}
+          whileHover={reducedMotion ? {} : { scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={onPrevMonth}
           className={cn(
             "w-10 h-10 rounded-xl flex items-center justify-center",
             "bg-white/80 hover:bg-white",
-            "shadow-[inset_2px_2px_4px_#ffffff,inset_-2px_-2px_4px_#d1d5db]",
+            reducedMotion
+              ? "shadow-md"
+              : "shadow-[inset_2px_2px_4px_#ffffff,inset_-2px_-2px_4px_#d1d5db]",
             "transition-all duration-200"
           )}
         >
@@ -67,14 +72,16 @@ export const StatsCard: React.FC<StatsCardProps> = ({
         </h2>
 
         <motion.button
-          whileHover={{ scale: 1.1 }}
+          whileHover={reducedMotion ? {} : { scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={onNextMonth}
           disabled={isCurrentMonth()}
           className={cn(
             "w-10 h-10 rounded-xl flex items-center justify-center",
             "bg-white/80 hover:bg-white",
-            "shadow-[inset_2px_2px_4px_#ffffff,inset_-2px_-2px_4px_#d1d5db]",
+            reducedMotion
+              ? "shadow-md"
+              : "shadow-[inset_2px_2px_4px_#ffffff,inset_-2px_-2px_4px_#d1d5db]",
             "transition-all duration-200",
             isCurrentMonth() && "opacity-40 cursor-not-allowed"
           )}
@@ -97,11 +104,13 @@ export const StatsCard: React.FC<StatsCardProps> = ({
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {/* Income */}
           <motion.div
-            whileHover={{ y: -2 }}
+            whileHover={reducedMotion ? {} : { y: -2 }}
             className={cn(
               "p-4 rounded-2xl",
-              "bg-white/60 backdrop-blur-sm",
-              "shadow-[inset_4px_4px_8px_#ffffff,inset_-4px_-4px_8px_#e2e8f0]"
+              getShadowClass('backdrop', reducedMotion),
+              reducedMotion
+                ? "shadow-md"
+                : "shadow-[inset_4px_4px_8px_#ffffff,inset_-4px_-4px_8px_#e2e8f0]"
             )}
           >
             <div className="flex items-center gap-2 mb-2">
@@ -117,11 +126,13 @@ export const StatsCard: React.FC<StatsCardProps> = ({
 
           {/* Expense */}
           <motion.div
-            whileHover={{ y: -2 }}
+            whileHover={reducedMotion ? {} : { y: -2 }}
             className={cn(
               "p-4 rounded-2xl",
-              "bg-white/60 backdrop-blur-sm",
-              "shadow-[inset_4px_4px_8px_#ffffff,inset_-4px_-4px_8px_#e2e8f0]"
+              getShadowClass('backdrop', reducedMotion),
+              reducedMotion
+                ? "shadow-md"
+                : "shadow-[inset_4px_4px_8px_#ffffff,inset_-4px_-4px_8px_#e2e8f0]"
             )}
           >
             <div className="flex items-center gap-2 mb-2">
@@ -137,11 +148,13 @@ export const StatsCard: React.FC<StatsCardProps> = ({
 
           {/* Balance */}
           <motion.div
-            whileHover={{ y: -2 }}
+            whileHover={reducedMotion ? {} : { y: -2 }}
             className={cn(
               "p-4 rounded-2xl",
-              "bg-white/60 backdrop-blur-sm",
-              "shadow-[inset_4px_4px_8px_#ffffff,inset_-4px_-4px_8px_#e2e8f0]"
+              getShadowClass('backdrop', reducedMotion),
+              reducedMotion
+                ? "shadow-md"
+                : "shadow-[inset_4px_4px_8px_#ffffff,inset_-4px_-4px_8px_#e2e8f0]"
             )}
           >
             <div className="flex items-center gap-2 mb-2">
