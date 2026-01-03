@@ -20,6 +20,7 @@ const Settings = lazy(() => import('./pages/Settings').then(m => ({ default: m.S
 // Admin pages
 const UserManagement = lazy(() => import('./pages/admin/UserManagement').then(m => ({ default: m.UserManagement })));
 const CategoryManagement = lazy(() => import('./pages/admin/CategoryManagement').then(m => ({ default: m.CategoryManagement })));
+const AdminSettings = lazy(() => import('./pages/admin/Settings').then(m => ({ default: m.Settings })));
 
 // Loading fallback
 const PageLoader = () => (
@@ -88,6 +89,14 @@ function App() {
               element={
                 <AdminRoute>
                   <CategoryManagement />
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="/admin/settings"
+              element={
+                <AdminRoute>
+                  <AdminSettings />
                 </AdminRoute>
               }
             />

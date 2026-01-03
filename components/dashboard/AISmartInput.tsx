@@ -102,12 +102,12 @@ export const AISmartInput: React.FC<AISmartInputProps> = ({
             "text-xs px-3 py-1.5 rounded-full",
             "bg-white/60",
             "shadow-[inset_1px_1px_2px_#ffffff,inset_-1px_-1px_2px_#e9d5ff]",
-            usageStats.used >= usageStats.limit 
+            usageStats.limit !== -1 && usageStats.used >= usageStats.limit 
               ? "text-rose-600" 
               : "text-slate-600"
           )}>
             <span className="font-semibold">{usageStats.used}</span>
-            <span className="text-slate-400">/{usageStats.limit}</span>
+            <span className="text-slate-400">/{usageStats.limit === -1 ? '∞' : usageStats.limit}</span>
             <span className="ml-1 text-slate-400">hari ini</span>
           </div>
         )}

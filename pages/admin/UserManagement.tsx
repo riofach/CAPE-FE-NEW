@@ -6,6 +6,7 @@ import { ClayCard } from '../../components/ui/clay-card';
 import { Button } from '../../components/ui/button';
 import { ClayConfirmDialog } from '../../components/ui/clay-confirm-dialog';
 import { CreateAdminDialog } from '../../components/admin/CreateAdminDialog';
+import { UserAiDialog } from '../../components/admin/UserAiDialog';
 import { api } from '../../lib/api';
 import { useToast } from '../../contexts/ToastContext';
 import { useAuth } from '../../contexts/AuthContext';
@@ -25,7 +26,8 @@ export const UserManagement: React.FC = () => {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<AdminUser | null>(null);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
-  const [togglingAiId, setTogglingAiId] = useState<string | null>(null);
+  const [aiDialogUser, setAiDialogUser] = useState<AdminUser | null>(null);
+  const [globalAiLimit, setGlobalAiLimit] = useState(25);
 
   // Debounce search
   useEffect(() => {
@@ -38,18 +40,27 @@ export const UserManagement: React.FC = () => {
   const fetchUsers = useCallback(async () => {
     setIsLoading(true);
     try {
-      const response = await api.admin.users.list({
-        search: debouncedSearch || undefined,
-        role: roleFilter === 'ALL' ? undefined : roleFilter,
-        page,
-        limit: 20
-      });
+      const [usersResponse, settingsResponse] = await Promise.all([
+        api.admin.users.list({
+          search: debouncedSearch || undefined,
+          role: roleFilter === 'ALL' ? undefined : roleFilter,
+          page,
+          limit: 20
+        }),
+        api.admin.settings.get()
+      ]);
       
-      if (response.data) {
-        setUsers(response.data);
+      if (usersResponse.data) {
+        setUsers(usersResponse.data);
       }
-      if (response.pagination) {
-        setTotal(response.pagination.total);
+      if (usersResponse.pagination) {
+        setTotal(usersResponse.pagination.total);
+      }
+      if (settingsResponse.data?.ai_daily_limit_default) {
+        const limit = parseInt(settingsResponse.data.ai_daily_limit_default, 10);
+        if (!isNaN(limit) && limit > 0) {
+          setGlobalAiLimit(limit);
+        }
       }
     } catch (error: any) {
       toast.error(error.message || 'Gagal memuat data user');
@@ -87,20 +98,16 @@ export const UserManagement: React.FC = () => {
     toast.success('Admin baru berhasil dibuat! 🛡️');
   };
 
-  const handleToggleAiAccess = async (user: AdminUser) => {
-    setTogglingAiId(user.id);
-    try {
-      const newEnabled = !user.aiEnabled;
-      await api.admin.users.toggleAiAccess(user.id, newEnabled);
-      setUsers(prev => prev.map(u => 
-        u.id === user.id ? { ...u, aiEnabled: newEnabled } : u
-      ));
-      toast.success(`AI ${newEnabled ? 'diaktifkan' : 'dinonaktifkan'} untuk ${user.fullName || user.email}`);
-    } catch (error: any) {
-      toast.error(error.message || 'Gagal mengubah akses AI');
-    } finally {
-      setTogglingAiId(null);
-    }
+  const handleAiDialogUpdate = (updatedUser: AdminUser) => {
+    setUsers(prev => prev.map(u => 
+      u.id === updatedUser.id ? updatedUser : u
+    ));
+  };
+
+  const getUserLimitDisplay = (user: AdminUser): string => {
+    if (user.aiDailyLimit === -1) return '∞';
+    if (user.aiDailyLimit !== null) return user.aiDailyLimit.toString();
+    return globalAiLimit.toString();
   };
 
   const formatDate = (dateStr: string) => {
@@ -239,7 +246,7 @@ export const UserManagement: React.FC = () => {
                               : "bg-slate-100 text-slate-500"
                           )}>
                             <Sparkles className="w-3 h-3" strokeWidth={1.5} />
-                            AI {user.aiEnabled ? 'ON' : 'OFF'}
+                            {user.aiEnabled ? `${getUserLimitDisplay(user)}/hari` : 'OFF'}
                           </span>
                           <span className="text-xs text-slate-400">
                             {user.authProvider}
@@ -260,19 +267,15 @@ export const UserManagement: React.FC = () => {
                         <Button
                           variant="secondary"
                           size="sm"
-                          onClick={() => handleToggleAiAccess(user)}
-                          disabled={togglingAiId === user.id}
+                          onClick={() => setAiDialogUser(user)}
                           className={cn(
                             user.aiEnabled 
                               ? "!text-amber-600 hover:!bg-amber-50" 
                               : "!text-slate-400 hover:!bg-slate-100"
                           )}
-                          title={user.aiEnabled ? 'Nonaktifkan AI' : 'Aktifkan AI'}
+                          title="Pengaturan AI"
                         >
-                          <Sparkles className={cn(
-                            "w-4 h-4",
-                            togglingAiId === user.id && "animate-pulse"
-                          )} strokeWidth={1.5} />
+                          <Sparkles className="w-4 h-4" strokeWidth={1.5} />
                         </Button>
                         <Button
                           variant="secondary"
@@ -320,6 +323,15 @@ export const UserManagement: React.FC = () => {
         cancelText="Batal"
         variant="danger"
         isLoading={!!deletingId}
+      />
+
+      {/* User AI Settings Dialog */}
+      <UserAiDialog
+        open={!!aiDialogUser}
+        onClose={() => setAiDialogUser(null)}
+        user={aiDialogUser}
+        globalLimit={globalAiLimit}
+        onUpdate={handleAiDialogUpdate}
       />
     </AdminLayout>
   );

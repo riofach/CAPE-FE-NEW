@@ -15,7 +15,8 @@ import type {
   AdminUserListParams,
   CreateAdminInput,
   CreateCategoryInput,
-  UpdateCategoryInput
+  UpdateCategoryInput,
+  AppSettings
 } from '../types/api';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
@@ -157,6 +158,22 @@ export const api = {
         fetchApi<AdminUser & { message: string }>(`/api/admin/users/${id}/ai-access`, {
           method: 'PATCH',
           body: JSON.stringify({ enabled })
+        }),
+      
+      updateAiLimit: (id: string, aiDailyLimit: number | null) =>
+        fetchApi<AdminUser & { message: string }>(`/api/admin/users/${id}/ai-limit`, {
+          method: 'PATCH',
+          body: JSON.stringify({ aiDailyLimit })
+        })
+    },
+    
+    settings: {
+      get: () => fetchApi<AppSettings>('/api/admin/settings'),
+      
+      update: (key: string, value: string) =>
+        fetchApi<{ key: string; value: string }>(`/api/admin/settings/${key}`, {
+          method: 'PUT',
+          body: JSON.stringify({ value })
         })
     },
     
