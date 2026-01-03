@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, FolderTree, LogOut, Menu, X, Shield } from 'lucide-react';
+import { Users, FolderTree, LogOut, Menu, X, Shield, Settings } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { useAuth } from '../../contexts/AuthContext';
 import { useUserProfile } from '../../contexts/UserProfileContext';
@@ -9,6 +9,7 @@ import { useUserProfile } from '../../contexts/UserProfileContext';
 const navItems = [
   { path: '/admin/users', label: 'Users', icon: Users },
   { path: '/admin/categories', label: 'Categories', icon: FolderTree },
+  { path: '/admin/settings', label: 'Settings', icon: Settings },
 ];
 
 export const AdminNav: React.FC = () => {

@@ -118,10 +118,16 @@ export interface AdminUser {
   role: 'CLIENT' | 'ADMIN';
   authProvider: string;
   aiEnabled: boolean;
+  aiDailyLimit: number | null; // null = use default, -1 = unlimited
   createdAt: string;
   _count?: {
     transactions: number;
   };
+}
+
+export interface AppSettings {
+  ai_daily_limit_default?: string;
+  [key: string]: string | undefined;
 }
 
 export interface AdminUserListParams {

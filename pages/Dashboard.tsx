@@ -102,6 +102,20 @@ export const Dashboard: React.FC = () => {
     fetchAiUsage();
   }, [fetchCategories, fetchAiUsage]);
 
+  // Auto-refresh AI usage when tab becomes visible
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        fetchAiUsage();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [fetchAiUsage]);
+
   const handlePrevMonth = () => {
     const [year, month] = currentMonth.split('-').map(Number);
     const newDate = new Date(year, month - 2);
