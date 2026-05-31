@@ -158,3 +158,56 @@ export interface UpdateCategoryInput {
   colorHex?: string;
   keywords?: string;
 }
+
+// Debts (Catatan Utang & Piutang)
+export type DebtType = 'LENDING' | 'BORROWING';
+export type DebtStatus = 'PENDING' | 'PAID';
+
+export interface Debt {
+  id: string;
+  userId: string;
+  type: DebtType;
+  counterpartyName: string;
+  amount: string;
+  note: string | null;
+  startDate: string;
+  dueDate: string | null;
+  status: DebtStatus;
+  paidAt: string | null;
+  createdTransactionId: string | null;
+  settlementTransactionId: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface DebtSummary {
+  totalLendingPending: number;
+  countLendingPending: number;
+  totalBorrowingPending: number;
+  countBorrowingPending: number;
+}
+
+export interface CreateDebtInput {
+  type: DebtType;
+  counterpartyName: string;
+  amount: number;
+  note?: string;
+  startDate?: string;
+  dueDate?: string;
+  syncToTransaction?: boolean;
+}
+
+export interface UpdateDebtInput {
+  counterpartyName?: string;
+  amount?: number;
+  note?: string | null;
+  startDate?: string;
+  dueDate?: string | null;
+}
+
+export interface DebtListParams {
+  type?: DebtType;
+  status?: DebtStatus;
+  limit?: number;
+  offset?: number;
+}

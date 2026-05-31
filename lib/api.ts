@@ -1,9 +1,9 @@
 import { supabase } from './supabase';
-import type { 
-  Category, 
-  Transaction, 
-  TransactionStats, 
-  ApiResponse, 
+import type {
+  Category,
+  Transaction,
+  TransactionStats,
+  ApiResponse,
   PaginatedResponse,
   AiParseResult,
   AnalyticsData,
@@ -16,7 +16,12 @@ import type {
   CreateAdminInput,
   CreateCategoryInput,
   UpdateCategoryInput,
-  AppSettings
+  AppSettings,
+  Debt,
+  DebtSummary,
+  CreateDebtInput,
+  UpdateDebtInput,
+  DebtListParams
 } from '../types/api';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
@@ -118,6 +123,40 @@ export const api = {
     })
   },
   
+  debts: {
+    list: (params?: DebtListParams) => {
+      const searchParams = new URLSearchParams();
+      if (params?.type) searchParams.set('type', params.type);
+      if (params?.status) searchParams.set('status', params.status);
+      if (params?.limit) searchParams.set('limit', params.limit.toString());
+      if (params?.offset) searchParams.set('offset', params.offset.toString());
+      const query = searchParams.toString();
+      return fetchApi<Debt[]>(`/api/debts${query ? `?${query}` : ''}`) as Promise<PaginatedResponse<Debt>>;
+    },
+
+    summary: () => fetchApi<DebtSummary>('/api/debts/summary'),
+
+    get: (id: string) => fetchApi<Debt>(`/api/debts/${id}`),
+
+    create: (data: CreateDebtInput) => fetchApi<Debt>('/api/debts', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    }),
+
+    update: (id: string, data: UpdateDebtInput) => fetchApi<Debt>(`/api/debts/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data)
+    }),
+
+    settle: (id: string) => fetchApi<Debt>(`/api/debts/${id}/settle`, {
+      method: 'POST'
+    }),
+
+    delete: (id: string) => fetchApi<{ message: string; deletedTransactions: number }>(`/api/debts/${id}`, {
+      method: 'DELETE'
+    })
+  },
+
   users: {
     getProfile: () => fetchApi<UserProfile>('/api/users/profile'),
     
