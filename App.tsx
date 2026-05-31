@@ -15,6 +15,7 @@ const AuthCallback = lazy(() => import('./pages/AuthCallback').then(m => ({ defa
 const Dashboard = lazy(() => import('./pages/Dashboard').then(m => ({ default: m.Dashboard })));
 const Analytics = lazy(() => import('./pages/Analytics').then(m => ({ default: m.Analytics })));
 const Transactions = lazy(() => import('./pages/Transactions').then(m => ({ default: m.Transactions })));
+const Debts = lazy(() => import('./pages/Debts').then(m => ({ default: m.Debts })));
 const Settings = lazy(() => import('./pages/Settings').then(m => ({ default: m.Settings })));
 
 // Admin pages
@@ -63,6 +64,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Transactions />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/debts"
+              element={
+                <ProtectedRoute>
+                  <Debts />
                 </ProtectedRoute>
               }
             />
