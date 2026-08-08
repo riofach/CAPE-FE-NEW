@@ -211,3 +211,73 @@ export interface DebtListParams {
   limit?: number;
   offset?: number;
 }
+
+// Business (Sistem Bisnis - ledger terpisah dari keuangan pribadi)
+export type BusinessEntryKind = 'CAPITAL' | 'EXPENSE' | 'REVENUE';
+export type BusinessStatus = 'PROFIT' | 'LOSS' | 'BREAK_EVEN';
+
+export interface BusinessMetrics {
+  totalModal: number;
+  totalOmzet: number;
+  totalBiaya: number;
+  labaOperasional: number; // Omzet - Biaya (tidak termasuk Modal)
+  posisiKas: number; // Modal + Omzet - Biaya
+  status: BusinessStatus;
+}
+
+export interface Business {
+  id: string;
+  userId: string;
+  name: string;
+  iconSlug: string;
+  colorHex: string;
+  note: string | null;
+  createdAt: string;
+  updatedAt: string;
+  metrics?: BusinessMetrics; // present on list + detail + create responses
+}
+
+export interface BusinessEntry {
+  id: string;
+  businessId: string;
+  kind: BusinessEntryKind;
+  amount: string; // Decimal serialized as string
+  description: string | null;
+  date: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateBusinessInput {
+  name: string;
+  iconSlug?: string;
+  colorHex?: string;
+  note?: string;
+}
+
+export interface UpdateBusinessInput {
+  name?: string;
+  iconSlug?: string;
+  colorHex?: string;
+  note?: string | null;
+}
+
+export interface CreateBusinessEntryInput {
+  kind: BusinessEntryKind;
+  amount: number;
+  description?: string;
+  date?: string;
+}
+
+export interface UpdateBusinessEntryInput {
+  kind?: BusinessEntryKind;
+  amount?: number;
+  description?: string | null;
+  date?: string;
+}
+
+export interface BusinessEntryListParams {
+  kind?: BusinessEntryKind;
+  limit?: number;
+  offset?: number;
+}
