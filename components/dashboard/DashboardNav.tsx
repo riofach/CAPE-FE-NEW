@@ -8,6 +8,7 @@ import {
   Receipt,
   Settings,
   HandCoins,
+  Building2,
   type LucideIcon
 } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -28,6 +29,7 @@ const NAV_ITEMS: NavItem[] = [
   { to: '/analytics', label: 'Analytics', icon: BarChart3 },
   { to: '/transactions', label: 'Transaksi', icon: Receipt },
   { to: '/debts', label: 'Utang', icon: HandCoins },
+  { to: '/business', label: 'Bisnis', icon: Building2 },
   { to: '/settings', label: 'Settings', icon: Settings }
 ];
 
