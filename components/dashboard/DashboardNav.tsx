@@ -8,6 +8,7 @@ import {
   Receipt,
   Settings,
   HandCoins,
+  Building2,
   type LucideIcon
 } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -28,6 +29,7 @@ const NAV_ITEMS: NavItem[] = [
   { to: '/analytics', label: 'Analytics', icon: BarChart3 },
   { to: '/transactions', label: 'Transaksi', icon: Receipt },
   { to: '/debts', label: 'Utang', icon: HandCoins },
+  { to: '/business', label: 'Bisnis', icon: Building2 },
   { to: '/settings', label: 'Settings', icon: Settings }
 ];
 
@@ -136,7 +138,7 @@ export const DashboardNav: React.FC = () => {
         <div className="sm:hidden mt-2">
           <div
             className={cn(
-              'flex items-stretch gap-1',
+              'flex items-stretch gap-1 overflow-x-auto',
               'bg-slate-100/80 rounded-xl p-1',
               'shadow-[inset_2px_2px_4px_rgba(0,0,0,0.05)]'
             )}
@@ -148,7 +150,7 @@ export const DashboardNav: React.FC = () => {
                 end={end}
                 className={({ isActive }) =>
                   cn(
-                    'flex-1 min-h-[48px] flex flex-col items-center justify-center gap-0.5',
+                    'flex-1 min-w-[56px] min-h-[48px] flex flex-col items-center justify-center gap-0.5',
                     'px-1 py-1.5 rounded-lg text-[10px] font-medium leading-tight transition-all duration-200',
                     isActive ? activePillClass : idlePillClass
                   )

@@ -21,7 +21,14 @@ import type {
   DebtSummary,
   CreateDebtInput,
   UpdateDebtInput,
-  DebtListParams
+  DebtListParams,
+  Business,
+  BusinessEntry,
+  CreateBusinessInput,
+  UpdateBusinessInput,
+  CreateBusinessEntryInput,
+  UpdateBusinessEntryInput,
+  BusinessEntryListParams
 } from '../types/api';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
@@ -155,6 +162,54 @@ export const api = {
     delete: (id: string) => fetchApi<{ message: string; deletedTransactions: number }>(`/api/debts/${id}`, {
       method: 'DELETE'
     })
+  },
+
+  businesses: {
+    list: () => fetchApi<Business[]>('/api/businesses'),
+
+    get: (id: string) => fetchApi<Business>(`/api/businesses/${id}`),
+
+    create: (data: CreateBusinessInput) => fetchApi<Business>('/api/businesses', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    }),
+
+    update: (id: string, data: UpdateBusinessInput) => fetchApi<Business>(`/api/businesses/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data)
+    }),
+
+    delete: (id: string) => fetchApi<{ message: string }>(`/api/businesses/${id}`, {
+      method: 'DELETE'
+    }),
+
+    entries: {
+      list: (businessId: string, params?: BusinessEntryListParams) => {
+        const searchParams = new URLSearchParams();
+        if (params?.kind) searchParams.set('kind', params.kind);
+        if (params?.limit) searchParams.set('limit', params.limit.toString());
+        if (params?.offset) searchParams.set('offset', params.offset.toString());
+        const query = searchParams.toString();
+        return fetchApi<BusinessEntry[]>(`/api/businesses/${businessId}/entries${query ? `?${query}` : ''}`) as Promise<PaginatedResponse<BusinessEntry>>;
+      },
+
+      create: (businessId: string, data: CreateBusinessEntryInput) =>
+        fetchApi<BusinessEntry>(`/api/businesses/${businessId}/entries`, {
+          method: 'POST',
+          body: JSON.stringify(data)
+        }),
+
+      update: (businessId: string, id: string, data: UpdateBusinessEntryInput) =>
+        fetchApi<BusinessEntry>(`/api/businesses/${businessId}/entries/${id}`, {
+          method: 'PUT',
+          body: JSON.stringify(data)
+        }),
+
+      delete: (businessId: string, id: string) =>
+        fetchApi<{ message: string }>(`/api/businesses/${businessId}/entries/${id}`, {
+          method: 'DELETE'
+        })
+    }
   },
 
   users: {

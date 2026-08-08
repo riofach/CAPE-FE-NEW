@@ -37,6 +37,7 @@ export const ClayDialog: React.FC<ClayDialogProps> = ({
             className={cn(
               "fixed left-1/2 top-1/2 z-50 -translate-x-1/2 -translate-y-1/2",
               "w-[calc(100%-2rem)] max-w-md",
+              "max-h-[calc(100dvh-2rem)] overflow-y-auto",
               "rounded-3xl p-6",
               "bg-[#f0f4f8]",
               "shadow-[20px_20px_60px_#c8d0e7,-20px_-20px_60px_#ffffff]",

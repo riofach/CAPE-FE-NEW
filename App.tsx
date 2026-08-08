@@ -16,6 +16,8 @@ const Dashboard = lazy(() => import('./pages/Dashboard').then(m => ({ default: m
 const Analytics = lazy(() => import('./pages/Analytics').then(m => ({ default: m.Analytics })));
 const Transactions = lazy(() => import('./pages/Transactions').then(m => ({ default: m.Transactions })));
 const Debts = lazy(() => import('./pages/Debts').then(m => ({ default: m.Debts })));
+const Business = lazy(() => import('./pages/Business').then(m => ({ default: m.Business })));
+const BusinessDetail = lazy(() => import('./pages/BusinessDetail').then(m => ({ default: m.BusinessDetail })));
 const Settings = lazy(() => import('./pages/Settings').then(m => ({ default: m.Settings })));
 
 // Admin pages
@@ -72,6 +74,22 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Debts />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/business"
+              element={
+                <ProtectedRoute>
+                  <Business />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/business/:id"
+              element={
+                <ProtectedRoute>
+                  <BusinessDetail />
                 </ProtectedRoute>
               }
             />
